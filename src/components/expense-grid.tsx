@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Account, AccountType, default as accounts } from "@/lib/all-accounts.json"
+import { Account, AccountType } from "@/lib/types"`nimport accounts from "@/lib/all-accounts.json"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
