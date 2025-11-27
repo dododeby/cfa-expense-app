@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Account, AccountType } from "@/lib/types"`nimport accounts from "@/lib/all-accounts.json"
+import { Account, AccountType } from "@/lib/types"
+import accounts from "@/lib/all-accounts.json"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -151,55 +152,55 @@ export function ExpenseGrid() {
                     <TableBody>
                         {default as accounts.map((account) => {
                             const values = getRowValues(account)
-                            const isSynthetic = account.type === 'SYNTHETIC'
+                        const isSynthetic = account.type === 'SYNTHETIC'
 
-                            return (
-                                <TableRow key={account.id} className={cn(isSynthetic && "bg-slate-50 font-semibold")}>
-                                    <TableCell className={cn("py-2", isSynthetic ? "pl-4" : "pl-8")}>
-                                        {account.code} - {account.name}
+                        return (
+                        <TableRow key={account.id} className={cn(isSynthetic && "bg-slate-50 font-semibold")}>
+                            <TableCell className={cn("py-2", isSynthetic ? "pl-4" : "pl-8")}>
+                                {account.code} - {account.name}
+                            </TableCell>
+
+                            {isSynthetic ? (
+                                // Synthetic Row (Read-only/Calculated)
+                                <>
+                                    <TableCell className="text-right text-slate-500">-</TableCell>
+                                    <TableCell className="text-right text-slate-500">-</TableCell>
+                                    <TableCell className="text-right text-slate-500">-</TableCell>
+                                    <TableCell className="text-right text-slate-500">-</TableCell>
+                                    <TableCell className="text-right text-slate-500">-</TableCell>
+                                </>
+                            ) : (
+                                // Analytical Row (Input)
+                                <>
+                                    <TableCell>
+                                        <Input
+                                            type="number"
+                                            className="text-right h-8"
+                                            value={data[account.id]?.total || ""}
+                                            onChange={(e) => handleInputChange(account.id, 'total', e.target.value)}
+                                        />
                                     </TableCell>
-
-                                    {isSynthetic ? (
-                                        // Synthetic Row (Read-only/Calculated)
-                                        <>
-                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                        </>
-                                    ) : (
-                                        // Analytical Row (Input)
-                                        <>
-                                            <TableCell>
-                                                <Input
-                                                    type="number"
-                                                    className="text-right h-8"
-                                                    value={data[account.id]?.total || ""}
-                                                    onChange={(e) => handleInputChange(account.id, 'total', e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Input
-                                                    type="number"
-                                                    className="text-right h-8"
-                                                    value={data[account.id]?.finalistica || ""}
-                                                    onChange={(e) => handleInputChange(account.id, 'finalistica', e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="text-right font-medium text-slate-700">
-                                                {values.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                            </TableCell>
-                                            <TableCell className="text-right text-slate-600">
-                                                {values.pctFinalistica.toFixed(1)}%
-                                            </TableCell>
-                                            <TableCell className="text-right text-slate-600">
-                                                {values.pctApoio.toFixed(1)}%
-                                            </TableCell>
-                                        </>
-                                    )}
-                                </TableRow>
-                            )
+                                    <TableCell>
+                                        <Input
+                                            type="number"
+                                            className="text-right h-8"
+                                            value={data[account.id]?.finalistica || ""}
+                                            onChange={(e) => handleInputChange(account.id, 'finalistica', e.target.value)}
+                                        />
+                                    </TableCell>
+                                    <TableCell className="text-right font-medium text-slate-700">
+                                        {values.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                    </TableCell>
+                                    <TableCell className="text-right text-slate-600">
+                                        {values.pctFinalistica.toFixed(1)}%
+                                    </TableCell>
+                                    <TableCell className="text-right text-slate-600">
+                                        {values.pctApoio.toFixed(1)}%
+                                    </TableCell>
+                                </>
+                            )}
+                        </TableRow>
+                        )
                         })}
                     </TableBody>
                 </Table>
