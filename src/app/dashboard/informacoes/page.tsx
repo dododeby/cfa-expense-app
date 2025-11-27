@@ -19,7 +19,9 @@ interface Message {
     read: boolean
 }
 
-export default function InformacoesPage() {
+import { Suspense } from "react"
+
+function InformacoesContent() {
     const searchParams = useSearchParams()
     const [orgType, setOrgType] = useState<string>('')
     const [orgName, setOrgName] = useState<string>('')
@@ -295,5 +297,13 @@ export default function InformacoesPage() {
                 </TabsContent>
             </Tabs>
         </div>
+    )
+}
+
+export default function InformacoesPage() {
+    return (
+        <Suspense fallback={<div>Carregando...</div>}>
+            <InformacoesContent />
+        </Suspense>
     )
 }
