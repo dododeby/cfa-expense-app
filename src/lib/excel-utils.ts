@@ -149,8 +149,8 @@ export const exportForBI = (
             const finalistica = accData.finalistica;
             const apoio = accData.total - accData.finalistica;
 
-            row.push(finalistica);
-            row.push(apoio);
+            row.push(finalistica.toString());
+            row.push(apoio.toString());
         });
 
         return row;
