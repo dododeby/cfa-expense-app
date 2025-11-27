@@ -200,7 +200,7 @@ export function TabbedExpenseGrid() {
             accounts.map(acc => [acc.id, { id: acc.id, name: acc.name }])
         )
 
-        const recoveredData = performDailyRecovery(data, accountsMap)
+        const recoveredData = await performDailyRecovery(data, accountsMap)
         setData(recoveredData)
 
         alert('Recovery realizado com sucesso! Os dados foram restaurados para o estado do dia anterior.')
