@@ -190,7 +190,7 @@ export function TabbedExpenseGrid() {
         }
     }
 
-    const handleDailyRecovery = () => {
+    const handleDailyRecovery = async () => {
         if (!confirm('Deseja restaurar os dados do dia anterior? Esta ação será registrada no histórico.')) {
             return
         }
