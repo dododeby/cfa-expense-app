@@ -308,7 +308,7 @@ function ConsolidatedDashboard() {
 
     // Chart State
     const [chartViewMode, setChartViewMode] = useState<'total' | 'split'>('total')
-    const [chartSampling, setChartSampling] = useState<'all' | 'top10' | 'bottom10'>('all')
+    const [chartSampling, setChartSampling] = useState<'all' | 'top14' | 'bottom14'>('all')
     const [chartGroupFilter, setChartGroupFilter] = useState<string>('all')
 
     const accounts: Account[] = allAccountsData as Account[]
