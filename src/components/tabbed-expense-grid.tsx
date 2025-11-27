@@ -41,7 +41,7 @@ export function TabbedExpenseGrid() {
     const [validationErrors, setValidationErrors] = useState<ValidationError[]>([])
     const [showValidationDetails, setShowValidationDetails] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const saveTimeoutRef = useRef<NodeJS.Timeout>()
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     const accounts: Account[] = allAccountsData as Account[]
 
