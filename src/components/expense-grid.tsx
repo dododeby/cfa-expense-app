@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Account, AccountType, INITIAL_ACCOUNTS } from "@/lib/initial-data"
+import { Account, AccountType, default as accounts } from "@/lib/all-accounts.json"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -149,7 +149,7 @@ export function ExpenseGrid() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {INITIAL_ACCOUNTS.map((account) => {
+                        {default as accounts.map((account) => {
                             const values = getRowValues(account)
                             const isSynthetic = account.type === 'SYNTHETIC'
 
