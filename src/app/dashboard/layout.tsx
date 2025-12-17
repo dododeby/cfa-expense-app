@@ -368,7 +368,7 @@ export default function DashboardLayout({
 
                                     {isExpanded && (
                                         <div className="pl-4 space-y-1 border-l-2 border-slate-100 ml-4">
-                                            {item.children.map(child => {
+                                            {item.children.map((child: any) => {
                                                 const isChildActive = pathname === child.href
                                                 return (
                                                     <Link
