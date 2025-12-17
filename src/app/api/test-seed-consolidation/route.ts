@@ -1,12 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 import { ORGANIZATIONS } from "@/lib/constants";
 
 export async function GET() {
-    // Initialize Supabase Admin Client
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // Use shared Supabase Admin Client
+    const supabase = supabaseAdmin;
 
     const accountId = '1.1.1.1'; // Salários
     const year = 2024;
