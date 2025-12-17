@@ -346,7 +346,7 @@ export default function DashboardLayout({
                         const isExpanded = expandedItems.includes(item.title)
 
                         // Check if any child is active
-                        const isChildActive = item.children?.some(child => pathname === child.href)
+                        const isChildActive = item.children?.some((child: any) => pathname === child.href)
 
                         if (item.children) {
                             return (
