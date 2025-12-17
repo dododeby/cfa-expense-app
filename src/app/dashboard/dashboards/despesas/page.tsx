@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +20,7 @@ interface Account {
 
 const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#1e40af', '#1e3a8a']
 
-export default function DashboardPage() {
+function DashboardPageContent() {
     const [orgType, setOrgType] = useState<string>('')
     const [hasData, setHasData] = useState(false)
     const [lastSaved, setLastSaved] = useState<string>('')
@@ -193,6 +193,14 @@ export default function DashboardPage() {
                 />
             )}
         </div>
+    )
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense fallback={<div>Carregando dashboard de despesas...</div>}>
+            <DashboardPageContent />
+        </Suspense>
     )
 }
 

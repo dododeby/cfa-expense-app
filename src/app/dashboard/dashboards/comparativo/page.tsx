@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,6 +11,8 @@ import { loadExpenseData, loadConsolidatedData, loadOrganizations } from "@/lib/
 import { loadRevenueData } from "@/lib/revenue-data"
 import { loadConsolidatedRevenues } from "@/lib/revenue-data-consolidated"
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react"
+
+// ... imports remain the same
 
 interface Account {
     id: string;
@@ -33,7 +35,7 @@ const COLORS = {
     deficit: '#f59e0b'
 }
 
-export default function ComparativeDashboardPage() {
+function ComparativeDashboardContent() {
     const searchParams = useSearchParams()
     const isPrintMode = searchParams.get('print') === 'true'
 
@@ -537,5 +539,13 @@ export default function ComparativeDashboardPage() {
                 }
             `}</style>
         </div>
+    )
+}
+
+export default function ComparativeDashboardPage() {
+    return (
+        <Suspense fallback={<div>Carregando dashboard comparativo...</div>}>
+            <ComparativeDashboardContent />
+        </Suspense>
     )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,7 +19,7 @@ interface RevenueAccount {
 
 const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#1e40af', '#1e3a8a', '#7c3aed', '#a78bfa']
 
-export default function RevenueDashboardPage() {
+function RevenueDashboardContent() {
     const [orgType, setOrgType] = useState<string>('')
     const [revenueData, setRevenueData] = useState<any>({})
     const [loading, setLoading] = useState(true)
@@ -522,5 +522,13 @@ export default function RevenueDashboardPage() {
                 }
             `}</style>
         </div>
+    )
+}
+
+export default function RevenueDashboardPage() {
+    return (
+        <Suspense fallback={<div>Carregando dashboard de receitas...</div>}>
+            <RevenueDashboardContent />
+        </Suspense>
     )
 }
