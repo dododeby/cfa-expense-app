@@ -1,0 +1,5 @@
+2.1.2 | Títulos e Ações | Sintética
+2.1.2 | Equipamentos e Materiais Permanentes | Sintética
+2.3.1 | Imóveis | Sintética
+2.3.1.1 | Imóveis | Analítica
+2.3.1.2 | Terrenos | Analítica

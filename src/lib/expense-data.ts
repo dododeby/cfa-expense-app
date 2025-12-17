@@ -22,6 +22,8 @@ export async function loadExpenseData(): Promise<ExpenseData> {
 
         if (error) throw error
 
+        console.log('--- loadExpenseData RAW ---', { orgId, count: data?.length, firstRow: data?.[0] })
+
         // Convert array to object format
         const expenseData: ExpenseData = {}
         data?.forEach(row => {

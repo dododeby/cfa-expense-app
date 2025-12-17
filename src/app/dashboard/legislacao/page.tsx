@@ -33,6 +33,7 @@ import {
     type LegislationDocument
 } from "@/lib/legislation-utils"
 import { PDFViewerModal } from "@/components/pdf-viewer-modal"
+import { logAuditAction } from "@/lib/audit-utils"
 
 interface SortableDocumentProps {
     document: LegislationDocument
@@ -193,6 +194,12 @@ export default function LegislacaoPage() {
         const result = await uploadDocument(selectedFile, fileDescription, orgName)
 
         if (result.success) {
+            // Log audit action
+            await logAuditAction({
+                actionType: 'legislation_uploaded',
+                actionDetails: { fileName: selectedFile.name, description: fileDescription }
+            })
+
             alert('Documento enviado com sucesso!')
             setSelectedFile(null)
             setFileDescription('')
@@ -219,6 +226,12 @@ export default function LegislacaoPage() {
         const result = await deleteDocument(doc.id)
 
         if (result.success) {
+            // Log audit action
+            await logAuditAction({
+                actionType: 'legislation_deleted',
+                actionDetails: { fileName: doc.file_name, documentId: doc.id }
+            })
+
             alert('Documento excluído com sucesso!')
             loadDocuments()
         } else {

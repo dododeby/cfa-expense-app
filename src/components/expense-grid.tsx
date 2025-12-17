@@ -8,9 +8,90 @@ const accounts = accountsData as Account[]
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
+
 import { Download, Upload, FileBarChart } from "lucide-react"
 import { exportToExcel, importFromExcel, exportForBI } from "@/lib/excel-utils"
+
+// Helper component for formatted inputs
+const FormattedNumberInput = ({
+    value,
+    onChange,
+    disabled = false,
+    className = ""
+}: {
+    value: number,
+    onChange: (val: number) => void,
+    disabled?: boolean,
+    className?: string
+}) => {
+    // Initialize display value from prop immediately
+    const formatValue = (val: number) => {
+        return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    const [displayValue, setDisplayValue] = useState(formatValue(value))
+    const [isFocused, setIsFocused] = useState(false)
+
+    // Sync from parent when value changes externally (and not focused to avoid fighting cursor)
+    useEffect(() => {
+        if (!isFocused) {
+            setDisplayValue(formatValue(value))
+        }
+    }, [value, isFocused])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = e.target.value
+
+        // Remove non-numeric except comma
+        val = val.replace(/[^0-9,]/g, '')
+
+        // Ensure max one comma
+        const parts = val.split(',')
+        if (parts.length > 2) {
+            val = parts[0] + ',' + parts.slice(1).join('')
+        }
+
+        setDisplayValue(val)
+
+        // Parse for parent
+        // Handle "1.000,00" -> remove dots, replace comma with dot
+        const numericString = val.replace(/\./g, '').replace(',', '.')
+        const num = parseFloat(numericString)
+
+        if (!isNaN(num)) {
+            onChange(num)
+        } else {
+            // If empty or invalid, send 0
+            onChange(0)
+        }
+    }
+
+    const handleBlur = () => {
+        setIsFocused(false)
+        // Force re-format on blur using the current numeric value
+        // We use the 'value' prop which should be up to date via onChange
+        setDisplayValue(formatValue(value))
+    }
+
+    const handleFocus = () => {
+        setIsFocused(true)
+        // Optional: Select all text on focus?
+        // e.target.select() // (Would need ref)
+    }
+
+    return (
+        <Input
+            type="text"
+            className={cn("text-right h-8", className)}
+            value={displayValue}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            disabled={disabled}
+        />
+    )
+}
 
 interface ExpenseData {
     [accountId: string]: {
@@ -37,15 +118,26 @@ export function ExpenseGrid() {
         return () => clearTimeout(timer)
     }, [data])
 
-    const handleInputChange = (accountId: string, field: 'total' | 'finalistica', value: string) => {
-        const numValue = parseFloat(value) || 0
-        setData(prev => ({
-            ...prev,
-            [accountId]: {
-                ...prev[accountId],
-                [field]: numValue
-            }
-        }))
+    const handleValueChange = (accountId: string, field: 'total' | 'finalistica', numValue: number) => {
+        // Cota Parte Logic (ID: 1.10.3.5)
+        if (accountId === '1.10.3.5' && field === 'total') {
+            setData(prev => ({
+                ...prev,
+                [accountId]: {
+                    ...prev[accountId],
+                    total: numValue,
+                    finalistica: numValue
+                }
+            }))
+        } else {
+            setData(prev => ({
+                ...prev,
+                [accountId]: {
+                    ...prev[accountId],
+                    [field]: numValue
+                }
+            }))
+        }
     }
 
     const handleExport = () => {
@@ -175,23 +267,21 @@ export function ExpenseGrid() {
                                         // Analytical Row (Input)
                                         <>
                                             <TableCell>
-                                                <Input
-                                                    type="number"
-                                                    className="text-right h-8"
-                                                    value={data[account.id]?.total || ""}
-                                                    onChange={(e) => handleInputChange(account.id, 'total', e.target.value)}
+                                                <FormattedNumberInput
+                                                    value={data[account.id]?.total || 0}
+                                                    onChange={(val) => handleValueChange(account.id, 'total', val)}
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <Input
-                                                    type="number"
-                                                    className="text-right h-8"
-                                                    value={data[account.id]?.finalistica || ""}
-                                                    onChange={(e) => handleInputChange(account.id, 'finalistica', e.target.value)}
+                                                <FormattedNumberInput
+                                                    value={data[account.id]?.finalistica || 0}
+                                                    onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
+                                                    disabled={account.id === '1.10.3.5'}
+                                                    className={account.id === '1.10.3.5' ? "bg-slate-100 text-slate-500 cursor-not-allowed" : ""}
                                                 />
                                             </TableCell>
                                             <TableCell className="text-right font-medium text-slate-700">
-                                                {values.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                {formatCurrency(values.apoio)}
                                             </TableCell>
                                             <TableCell className="text-right text-slate-600">
                                                 {values.pctFinalistica.toFixed(1)}%
@@ -207,6 +297,6 @@ export function ExpenseGrid() {
                     </TableBody>
                 </Table>
             </div>
-        </div>
+        </div >
     )
 }

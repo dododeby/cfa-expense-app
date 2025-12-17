@@ -1,14 +1,19 @@
 "use client"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import dynamic from 'next/dynamic'
 import ResponsibleForm from "./components/ResponsibleForm"
-import ReportGenerator from "./components/ReportGenerator"
 import AuditHistory from "./components/AuditHistory"
+// import ClientOnly from "@/components/client-only" // No longer needed if using dynamic
+
+const Tabs = dynamic(() => import("@/components/ui/tabs").then(mod => mod.Tabs), { ssr: false })
+const TabsList = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsList), { ssr: false })
+const TabsTrigger = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsTrigger), { ssr: false })
+const TabsContent = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsContent), { ssr: false })
 
 export default function ConfiguracoesPage() {
     return (
-        <div className="space-y-6">
-            <div>
+        <div className="space-y-6" suppressHydrationWarning={true}>
+            <div suppressHydrationWarning={true}>
                 <h1 className="text-3xl font-bold text-slate-900">Configurações</h1>
                 <p className="text-slate-500 mt-1">
                     Gerencie dados dos responsáveis e visualize o histórico de alterações
@@ -23,7 +28,6 @@ export default function ConfiguracoesPage() {
 
                 <TabsContent value="responsaveis" className="space-y-6 mt-6">
                     <ResponsibleForm />
-                    <ReportGenerator />
                 </TabsContent>
 
                 <TabsContent value="historico" className="mt-6">

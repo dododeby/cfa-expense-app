@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1",
+    "name": "RECEITA CORRENTE",
+    "type": "Sintética"
+  },
+  {
+    "id": "1.1",
+    "name": "RECEITA TRIBUTÁRIA",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.2",
+    "name": "RECEITAS DE CONTRIBUICOES",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.3",
+    "name": "RECEITA PATRIMONIAL",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.4",
+    "name": "RECEITAS IMOBILIÁRIAS",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.5",
+    "name": "RECEITA DE SERVICOS",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.6",
+    "name": "FINANCEIRAS",
+    "type": "Sintética"
+  },
+  {
+    "id": "1.6.1",
+    "name": "RECEITAS DE APLICAÇÃO FINANCEIRA",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.6.2",
+    "name": "OUTRAS RECEITAS FINANCEIRAS",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.7",
+    "name": "TRANSFERENCIAS CORRENTES",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.8",
+    "name": "DÍVIDA ATIVA",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.9",
+    "name": "INDENIZAÇÕES E RESTITUIÇÕES",
+    "type": "Analítica"
+  },
+  {
+    "id": "1.10",
+    "name": "OUTRAS RECEITAS CORRENTES",
+    "type": "Analítica"
+  },
+  {
+    "id": "2",
+    "name": "RECEITA DE CAPITAL",
+    "type": "Sintética"
+  },
+  {
+    "id": "2.1",
+    "name": "ALIENAÇÃO DE BENS MÓVEIS E IMÓVEIS",
+    "type": "Analítica"
+  },
+  {
+    "id": "2.2",
+    "name": "OUTRAS RECEITAS DE CAPITAL",
+    "type": "Analítica"
+  }
+]

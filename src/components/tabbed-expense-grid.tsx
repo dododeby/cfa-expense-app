@@ -6,12 +6,17 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
-import { Download, Upload, AlertCircle, RotateCcw } from "lucide-react"
-import { exportToExcel, importFromExcel } from "@/lib/excel-utils"
-import { addAuditEntry, performDailyRecovery } from "@/lib/audit-utils"
+// ... (Top of file imports)
+import { Download, Upload, AlertCircle, RotateCcw, Info, Pencil, Save, X } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { supabase } from "@/lib/supabase"
+import { accountDescriptions as staticDescriptions } from "@/lib/account-descriptions"
 import { loadExpenseData, saveExpenseEntry } from "@/lib/expense-data"
+import { importFromExcel, exportToExcel } from "@/lib/excel-utils"
+import { addAuditEntry, performDailyRecovery } from "@/lib/audit-utils"
 
 interface Account {
     id: string;
@@ -34,6 +39,77 @@ interface ValidationError {
     message: string;
 }
 
+// Helper component for formatted inputs
+const FormattedNumberInput = ({
+    value,
+    onChange,
+    onFocus,
+    onBlur,
+    disabled = false,
+    className = ""
+}: {
+    value: number,
+    onChange: (val: number) => void,
+    onFocus?: () => void,
+    onBlur?: () => void,
+    disabled?: boolean,
+    className?: string
+}) => {
+    const formatValue = (val: number) => {
+        return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    const [displayValue, setDisplayValue] = useState(formatValue(value))
+    const [isFocused, setIsFocused] = useState(false)
+
+    useEffect(() => {
+        if (!isFocused) {
+            setDisplayValue(formatValue(value))
+        }
+    }, [value, isFocused])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = e.target.value
+        val = val.replace(/[^0-9,]/g, '')
+        const parts = val.split(',')
+        if (parts.length > 2) {
+            val = parts[0] + ',' + parts.slice(1).join('')
+        }
+        setDisplayValue(val)
+
+        const numericString = val.replace(/\./g, '').replace(',', '.')
+        const num = parseFloat(numericString)
+        if (!isNaN(num)) {
+            onChange(num)
+        } else {
+            onChange(0)
+        }
+    }
+
+    const handleInputFocus = () => {
+        setIsFocused(true)
+        if (onFocus) onFocus()
+    }
+
+    const handleInputBlur = () => {
+        setIsFocused(false)
+        setDisplayValue(formatValue(value))
+        if (onBlur) onBlur()
+    }
+
+    return (
+        <Input
+            type="text"
+            className={cn("text-right h-8", className)}
+            value={displayValue}
+            onChange={handleChange}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            disabled={disabled}
+        />
+    )
+}
+
 export function TabbedExpenseGrid() {
     const [data, setData] = useState<ExpenseData>({})
     const [saving, setSaving] = useState(false)
@@ -45,11 +121,51 @@ export function TabbedExpenseGrid() {
 
     const accounts: Account[] = allAccountsData as Account[]
 
+    const [customDescriptions, setCustomDescriptions] = useState<Record<string, string>>({})
+    const [editingId, setEditingId] = useState<string | null>(null)
+    const [editValue, setEditValue] = useState("")
+
+    // Load custom descriptions
+    useEffect(() => {
+        const loadDescriptions = async () => {
+            const { data } = await supabase.from('account_guidance').select('account_id, description')
+            if (data) {
+                const map: Record<string, string> = {}
+                data.forEach((item: any) => {
+                    map[item.account_id] = item.description
+                })
+                setCustomDescriptions(map)
+            }
+        }
+        loadDescriptions()
+    }, [])
+
+    const handleSaveDescription = async (accountId: string) => {
+        // Optimistic update
+        setCustomDescriptions(prev => ({ ...prev, [accountId]: editValue }))
+        setEditingId(null)
+
+        await supabase.from('account_guidance').upsert({
+            account_id: accountId,
+            description: editValue,
+            updated_at: new Date().toISOString()
+        })
+    }
+
+    const startEditing = (id: string, currentText: string) => {
+        setEditingId(id)
+        setEditValue(currentText)
+    }
+
     // Load data from Supabase on mount
     useEffect(() => {
         const loadData = async () => {
             setLoading(true)
             const expenseData = await loadExpenseData()
+            console.log('--- TabbedExpenseGrid State ---', {
+                keys: Object.keys(expenseData),
+                sample: Object.keys(expenseData).slice(0, 3).map(k => ({ k, v: expenseData[k] }))
+            })
             setData(expenseData)
             setLoading(false)
         }
@@ -66,9 +182,7 @@ export function TabbedExpenseGrid() {
 
         saveTimeoutRef.current = setTimeout(async () => {
             if (Object.keys(data).length > 0) {
-                setSaving(true)
-                // Save will happen in handleInputChange
-                setTimeout(() => setSaving(false), 1000)
+                // Just a visual indicator that we are "ready" or "synced" status managed by individual saves
             }
         }, 2000)
 
@@ -86,12 +200,15 @@ export function TabbedExpenseGrid() {
         accounts.forEach(account => {
             if (account.type === 'Analítica') {
                 const rowData = data[account.id]
-                if (rowData && rowData.total > 0 && rowData.finalistica === 0) {
-                    errors.push({
-                        accountId: account.id,
-                        accountName: account.name,
-                        message: `Total preenchido mas Finalística está vazia`
-                    })
+                if (rowData) {
+                    // Removed rule: if (rowData.total > 0 && rowData.finalistica === 0)
+                    if (rowData.finalistica > rowData.total) {
+                        errors.push({
+                            accountId: account.id,
+                            accountName: account.name,
+                            message: `Despesa Finalística maior que o Total (Apoio negativo)`
+                        })
+                    }
                 }
             }
         })
@@ -127,43 +244,63 @@ export function TabbedExpenseGrid() {
 
     const groups = Object.keys(groupedAccounts).filter(g => g && g.trim() !== '')
 
-    const handleInputChange = async (accountId: string, field: 'total' | 'finalistica', value: string) => {
-        const numValue = parseFloat(value) || 0
-        const account = accounts.find(acc => acc.id === accountId)
+    const activeValueRef = useRef<number>(0)
 
-        if (!account) return
+    const handleInputFocus = (value: number) => {
+        activeValueRef.current = value
+    }
 
-        // Get previous value for audit trail
-        const previousValue = data[accountId]?.[field] || 0
+    const handleValueChange = (accountId: string, field: 'total' | 'finalistica', value: number) => {
+        const numValue = value
 
-        // Update local state first for immediate UI feedback
+        // Special logic for "Cota Parte ao CFA" (1.10.3.5)
+        let newTotal = field === 'total' ? numValue : (data[accountId]?.total || 0)
+        let newFinalistica = field === 'finalistica' ? numValue : (data[accountId]?.finalistica || 0)
+
+        if (accountId === '1.10.3.5' && field === 'total') {
+            newFinalistica = numValue
+        }
+
         setData(prev => ({
             ...prev,
             [accountId]: {
                 ...prev[accountId],
-                total: field === 'total' ? numValue : (prev[accountId]?.total || 0),
-                finalistica: field === 'finalistica' ? numValue : (prev[accountId]?.finalistica || 0)
+                total: newTotal,
+                finalistica: newFinalistica
             }
         }))
+    }
 
-        // Only log and save if value actually changed
-        if (previousValue !== numValue) {
+    const handleInputBlur = async (accountId: string, field: 'total' | 'finalistica') => {
+        const account = accounts.find(acc => acc.id === accountId)
+        if (!account) return
+
+        const rowData = data[accountId] || { total: 0, finalistica: 0 }
+        const newValue = field === 'total' ? rowData.total : rowData.finalistica
+        const previousValue = activeValueRef.current
+
+        // Only save if value changed
+        // For Cota Parte (1.10.3.5), if we changed total, finalistica also changed.
+        // The saveExpenseEntry saves BOTH fields, so one save call is enough.
+        if (newValue !== previousValue || (accountId === '1.10.3.5' && field === 'total')) {
+            setSaving(true)
+
+            // Audit
+            // For Cota Parte, ideally we should audit both, but for now we audit the field user interacted with.
             addAuditEntry({
                 accountId,
                 accountName: account.name,
                 field,
                 previousValue,
-                newValue: numValue
+                newValue
             })
 
-            // Save to Supabase
             try {
-                const total = field === 'total' ? numValue : (data[accountId]?.total || 0)
-                const finalistica = field === 'finalistica' ? numValue : (data[accountId]?.finalistica || 0)
-
-                await saveExpenseEntry(accountId, account.name, total, finalistica)
+                await saveExpenseEntry(accountId, account.name, rowData.total, rowData.finalistica)
             } catch (error) {
                 console.error('Error saving to Supabase:', error)
+            } finally {
+                setSaving(false)
             }
         }
     }
@@ -253,10 +390,43 @@ export function TabbedExpenseGrid() {
         return sum
     }, 0)
 
+    const [debugOrgId, setDebugOrgId] = useState<string>("")
+
+    // DEV MODE: Allow switching orgs
+    const handleDevOrgChange = (newOrgId: string) => {
+        sessionStorage.setItem('orgId', newOrgId)
+        setDebugOrgId(newOrgId)
+        window.location.reload() // Reload to force data fetch with new ID
+    }
+
+    const devOrgs = [
+        { id: 'cfa', name: 'CFA' },
+        { id: 'cra-sp', name: 'CRA-SP' },
+        { id: 'cra-rj', name: 'CRA-RJ' },
+        { id: 'cra-mg', name: 'CRA-MG' },
+        { id: 'cra-ce', name: 'CRA-CE' },
+        { id: 'cra-df', name: 'CRA-DF' },
+    ]
+
+    useEffect(() => {
+        setDebugOrgId(typeof window !== 'undefined' ? sessionStorage.getItem('orgId') || "null" : "")
+    }, [])
+
+
+
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return <div className="p-8 text-center text-slate-500">Carregando grid...</div>
+    }
+
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-blue-900">Preenchimento de Despesas</h2>
+                <h2 className="text-xl font-semibold text-blue-900">Resumo das Despesas</h2>
                 <div className="flex items-center gap-2">
                     <div className="text-sm text-slate-500 mr-4">
                         {saving ? "Salvando..." : "Alterações salvas"}
@@ -317,37 +487,111 @@ export function TabbedExpenseGrid() {
                 </Card>
             )}
 
-            {/* Per-Group Summary Cards + Total Geral */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                {groups.map((group) => {
-                    const total = getGroupTotals(groupedAccounts[group])
+            {/* Dashboard Summary Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {(() => {
+                    // Calculate Global Metrics
+                    let totalFinalistica = 0
+                    let totalApoio = 0
+                    let totalDespesasCorrentes = 0
+                    let totalDespesasCapital = 0
+                    let totalGeral = 0
+
+                    accounts.filter(a => a.type === 'Analítica').forEach(acc => {
+                        const row = data[acc.id] || { total: 0, finalistica: 0 }
+                        const apoio = row.total - row.finalistica
+
+                        totalFinalistica += row.finalistica
+                        totalApoio += apoio
+                        totalGeral += row.total
+
+                        // Simple heuristic: Group 1 = Correntes, Group 2 = Capital
+                        // Checking first char of ID
+                        if (acc.id.startsWith('1')) {
+                            totalDespesasCorrentes += row.total
+                        } else if (acc.id.startsWith('2')) {
+                            totalDespesasCapital += row.total
+                        }
+                    })
+
+                    const pctFinalistica = totalGeral > 0 ? (totalFinalistica / totalGeral) * 100 : 0
+                    const pctApoio = totalGeral > 0 ? (totalApoio / totalGeral) * 100 : 0
+
                     return (
-                        <Card key={group} className="border-slate-200">
-                            <CardHeader className="pb-2 px-3 pt-3">
-                                <CardTitle className="text-xs font-medium text-slate-600 line-clamp-2">
-                                    {group}
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="px-3 pb-3">
-                                <div className="text-lg font-bold text-slate-900">
-                                    {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <>
+                            <Card className="border-blue-200 bg-white">
+                                <CardHeader className="pb-2 px-3 pt-3">
+                                    <CardTitle className="text-xs font-medium text-slate-600">
+                                        Despesa Finalística
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="px-3 pb-3">
+                                    <div className="text-lg font-bold text-blue-900">
+                                        {totalFinalistica.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    </div>
+                                    <div className="text-xs text-blue-600 font-medium">
+                                        {pctFinalistica.toFixed(1)}%
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-slate-200 bg-slate-50">
+                                <CardHeader className="pb-2 px-3 pt-3">
+                                    <CardTitle className="text-xs font-medium text-slate-600">
+                                        Despesa de Apoio
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="px-3 pb-3">
+                                    <div className="text-lg font-bold text-slate-900">
+                                        {totalApoio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    </div>
+                                    <div className="text-xs text-slate-600 font-medium">
+                                        {pctApoio.toFixed(1)}%
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-blue-100 bg-blue-50/50">
+                                <CardHeader className="pb-2 px-3 pt-3">
+                                    <CardTitle className="text-xs font-medium text-blue-700">
+                                        Despesas Correntes
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="px-3 pb-3">
+                                    <div className="text-lg font-bold text-blue-900">
+                                        {totalDespesasCorrentes.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-slate-200 bg-white">
+                                <CardHeader className="pb-2 px-3 pt-3">
+                                    <CardTitle className="text-xs font-medium text-purple-700">
+                                        Despesas de Capital
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="px-3 pb-3">
+                                    <div className="text-lg font-bold text-purple-900">
+                                        {totalDespesasCapital.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-blue-300 bg-blue-50">
+                                <CardHeader className="pb-2 px-3 pt-3">
+                                    <CardTitle className="text-xs font-medium text-blue-900">
+                                        Total Geral
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="px-3 pb-3">
+                                    <div className="text-lg font-bold text-blue-950">
+                                        {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
                     )
-                })}
-                <Card className="bg-blue-50 border-blue-300">
-                    <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="text-xs font-medium text-blue-700">
-                            Total Geral
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-3 pb-3">
-                        <div className="text-lg font-bold text-blue-900">
-                            {grandTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </div>
-                    </CardContent>
-                </Card>
+                })()}
             </div>
 
             <Tabs defaultValue={groups[0]} className="w-full">
@@ -383,13 +627,79 @@ export function TabbedExpenseGrid() {
                                     </TableHeader>
                                     <TableBody>
                                         {groupAccounts.map((account) => {
-                                            const values = getRowValues(account)
+                                            const parts = account.id.split('.')
+
+                                            // Check Duplicate Names Logic
+                                            let hideRow = false
+                                            let isPseudoSynthetic = false
+
+                                            if (account.type === 'Sintética') {
+                                                // Only match parents that have EXACTLY ONE child with the SAME NAME
+                                                const directChildren = accounts.filter(child =>
+                                                    child.id.startsWith(account.id + '.') &&
+                                                    child.id.split('.').length === parts.length + 1
+                                                )
+
+                                                if (directChildren.length === 1 && directChildren[0].name.trim().toLowerCase() === account.name.trim().toLowerCase()) {
+                                                    hideRow = true
+                                                }
+                                            } else if (account.type === 'Analítica') {
+                                                // Standard logic: if I am the only child and match parent name, I might look synthetic IF parent is hidden.
+                                                // If parent is shown (because it had multiple children), I should look analytic.
+                                                if (parts.length > 1) {
+                                                    const parentId = parts.slice(0, -1).join('.')
+                                                    const parent = accounts.find(a => a.id === parentId)
+                                                    const siblings = accounts.filter(a =>
+                                                        a.id.startsWith(parentId + '.') &&
+                                                        a.id.split('.').length === parts.length
+                                                    )
+
+                                                    // If parent matches name AND I am the only child (sibling count 1), 
+                                                    // then parent was hidden above. So I take over visually.
+                                                    if (parent && parent.name.trim().toLowerCase() === account.name.trim().toLowerCase() && siblings.length === 1) {
+                                                        isPseudoSynthetic = true
+                                                    }
+                                                }
+                                            }
+
+                                            if (hideRow) return null
+
                                             const isSynthetic = account.type === 'Sintética'
+                                            let rowValues;
+
+                                            if (isSynthetic) {
+                                                // Calculate totals for synthetic account
+                                                const descendants = accounts.filter(a =>
+                                                    a.type === 'Analítica' &&
+                                                    a.id.startsWith(account.id + '.')
+                                                )
+
+                                                const total = descendants.reduce((sum, desc) => {
+                                                    const val = data[desc.id]?.total || 0
+                                                    return sum + val
+                                                }, 0)
+
+                                                const finalistica = descendants.reduce((sum, desc) => {
+                                                    const val = data[desc.id]?.finalistica || 0
+                                                    return sum + val
+                                                }, 0)
+
+                                                const apoio = total - finalistica
+                                                const pctFinalistica = total > 0 ? (finalistica / total) * 100 : 0
+                                                const pctApoio = total > 0 ? (apoio / total) * 100 : 0
+
+                                                rowValues = { total, finalistica, apoio, pctFinalistica, pctApoio }
+                                            } else {
+                                                rowValues = getRowValues(account)
+                                            }
+
                                             const hasValidationError = hasError(account.id)
+                                            const effectiveIsSynthetic = isSynthetic || isPseudoSynthetic
+                                            const description = customDescriptions[account.id] || staticDescriptions[account.id]
 
                                             return (
-                                                <TableRow key={account.id} className={cn(isSynthetic && "bg-slate-50 font-semibold")}>
-                                                    <TableCell className={cn("py-2", isSynthetic ? "pl-4" : "pl-8")}>
+                                                <TableRow key={account.id} className={cn(effectiveIsSynthetic && "bg-slate-50 font-semibold")}>
+                                                    <TableCell className={cn("py-2", effectiveIsSynthetic ? "pl-4" : "pl-8")}>
                                                         {account.name}
                                                         {hasValidationError && (
                                                             <AlertCircle className="inline-block h-4 w-4 ml-2 text-red-600" />
@@ -398,41 +708,101 @@ export function TabbedExpenseGrid() {
 
                                                     {isSynthetic ? (
                                                         <>
-                                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                                            <TableCell className="text-right text-slate-500">-</TableCell>
-                                                            <TableCell className="text-right text-slate-500">-</TableCell>
+                                                            <TableCell className="text-right text-slate-700">
+                                                                {rowValues.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                            </TableCell>
+                                                            <TableCell className="text-right text-slate-700">
+                                                                {rowValues.finalistica.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                            </TableCell>
+                                                            <TableCell className="text-right text-slate-700">
+                                                                {rowValues.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                            </TableCell>
+                                                            <TableCell className="text-right text-slate-600 bg-slate-50/50">
+                                                                {rowValues.pctFinalistica.toFixed(1)}%
+                                                            </TableCell>
+                                                            <TableCell className="text-right text-slate-600 bg-slate-50/50">
+                                                                {rowValues.pctApoio.toFixed(1)}%
+                                                            </TableCell>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <TableCell>
-                                                                <Input
-                                                                    type="number"
-                                                                    className="text-right h-8"
-                                                                    value={data[account.id]?.total || ""}
-                                                                    onChange={(e) => handleInputChange(account.id, 'total', e.target.value)}
+                                                                <FormattedNumberInput
+                                                                    value={data[account.id]?.total || 0}
+                                                                    onChange={(val) => handleValueChange(account.id, 'total', val)}
+                                                                    onFocus={() => handleInputFocus(data[account.id]?.total || 0)}
+                                                                    onBlur={() => handleInputBlur(account.id, 'total')}
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
-                                                                <Input
-                                                                    type="number"
+                                                                <FormattedNumberInput
+                                                                    value={data[account.id]?.finalistica || 0}
+                                                                    onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
+                                                                    onFocus={() => handleInputFocus(data[account.id]?.finalistica || 0)}
+                                                                    onBlur={() => handleInputBlur(account.id, 'finalistica')}
+                                                                    disabled={account.id === '1.10.3.5'}
                                                                     className={cn(
-                                                                        "text-right h-8",
-                                                                        hasValidationError && "border-red-500 bg-red-50"
+                                                                        hasValidationError && "border-red-500 bg-red-50",
+                                                                        account.id === '1.10.3.5' && "bg-slate-100 text-slate-500 cursor-not-allowed"
                                                                     )}
-                                                                    value={data[account.id]?.finalistica || ""}
-                                                                    onChange={(e) => handleInputChange(account.id, 'finalistica', e.target.value)}
                                                                 />
                                                             </TableCell>
                                                             <TableCell className="text-right font-medium text-slate-700">
-                                                                {values.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                                <div className="flex items-center justify-between">
+                                                                    {/* Tooltip Icon at start of column */}
+                                                                    {description ? (
+                                                                        <Popover>
+                                                                            <PopoverTrigger asChild>
+                                                                                <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 p-0 rounded-full hover:bg-slate-200 text-slate-400 hover:text-blue-600 -ml-2">
+                                                                                    <Info className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent className="w-80 p-3 bg-white shadow-lg border-slate-200" align="start">
+                                                                                {editingId === account.id ? (
+                                                                                    <div className="space-y-2">
+                                                                                        <h4 className="font-medium text-sm text-slate-900">Editar Descrição</h4>
+                                                                                        <Textarea
+                                                                                            value={editValue}
+                                                                                            onChange={(e) => setEditValue(e.target.value)}
+                                                                                            className="min-h-[100px] text-xs"
+                                                                                        />
+                                                                                        <div className="flex gap-2 justify-end">
+                                                                                            <Button size="sm" variant="outline" onClick={() => setEditingId(null)} className="h-7 text-xs"><X className="h-3 w-3 mr-1" /> Cancelar</Button>
+                                                                                            <Button size="sm" onClick={() => handleSaveDescription(account.id)} className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white"><Save className="h-3 w-3 mr-1" /> Salvar</Button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="space-y-1 group/popover relative">
+                                                                                        <div className="flex justify-between items-start">
+                                                                                            <h4 className="font-medium text-sm text-slate-900 flex items-center gap-2">
+                                                                                                <Info className="h-4 w-4 text-blue-600" />
+                                                                                                Atividade Finalística
+                                                                                            </h4>
+                                                                                            <Button
+                                                                                                variant="ghost"
+                                                                                                size="icon"
+                                                                                                className="h-5 w-5 opacity-0 group-hover/popover:opacity-100 transition-opacity"
+                                                                                                onClick={() => startEditing(account.id, description)}
+                                                                                            >
+                                                                                                <Pencil className="h-3 w-3 text-slate-400 hover:text-blue-600" />
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                        <p className="text-xs text-slate-500 italic mb-2">{account.name}</p>
+                                                                                        <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">{description}</p>
+                                                                                    </div>
+                                                                                )}
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    ) : <div className="w-4" />}
+
+                                                                    <span>{rowValues.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                                                </div>
                                                             </TableCell>
-                                                            <TableCell className="text-right text-slate-600">
-                                                                {values.pctFinalistica.toFixed(1)}%
+                                                            <TableCell className="text-right text-slate-500 bg-slate-100/50 opacity-80">
+                                                                {rowValues.pctFinalistica.toFixed(1)}%
                                                             </TableCell>
-                                                            <TableCell className="text-right text-slate-600">
-                                                                {values.pctApoio.toFixed(1)}%
+                                                            <TableCell className="text-right text-slate-500 bg-slate-100/50 opacity-80">
+                                                                {rowValues.pctApoio.toFixed(1)}%
                                                             </TableCell>
                                                         </>
                                                     )}

@@ -7,6 +7,7 @@ export interface ResponsibleData {
     dataResponsibleRole: string
     dataResponsibleDocType: 'CRC' | 'CRA' | 'CPF' | 'Outro'
     dataResponsibleDocNumber: string
+    cnpj?: string // Add CNPJ field
 }
 
 /**
@@ -14,28 +15,45 @@ export interface ResponsibleData {
  */
 export async function loadResponsibleData(orgId: string): Promise<ResponsibleData | null> {
     try {
-        const { data, error } = await supabase
-            .from('responsible_persons')
-            .select('*')
-            .eq('organization_id', orgId)
-            .single()
+        // Parallel fetch: Responsible Persons + Organization CNPJ
+        const [respResult, orgResult] = await Promise.all([
+            supabase
+                .from('responsible_persons')
+                .select('*')
+                .eq('organization_id', orgId)
+                .single(),
+            supabase
+                .from('organizations')
+                .select('cnpj')
+                .eq('id', orgId)
+                .single()
+        ])
 
-        if (error) {
-            if (error.code === 'PGRST116') {
-                // No data found - return null
-                return null
-            }
-            throw error
+        const { data, error } = respResult
+        const { data: orgData } = orgResult
+
+        // Initialize default or fetched data
+        const result: ResponsibleData = {
+            unitResponsibleName: '',
+            unitResponsibleCraNumber: '',
+            dataResponsibleName: '',
+            dataResponsibleRole: '',
+            dataResponsibleDocType: 'CRC',
+            dataResponsibleDocNumber: '',
+            cnpj: orgData?.cnpj || ''
         }
 
-        return {
-            unitResponsibleName: data.unit_responsible_name,
-            unitResponsibleCraNumber: data.unit_responsible_cra_number,
-            dataResponsibleName: data.data_responsible_name,
-            dataResponsibleRole: data.data_responsible_role,
-            dataResponsibleDocType: data.data_responsible_doc_type,
-            dataResponsibleDocNumber: data.data_responsible_doc_number
+        if (data) {
+            result.unitResponsibleName = data.unit_responsible_name
+            result.unitResponsibleCraNumber = data.unit_responsible_cra_number
+            result.dataResponsibleName = data.data_responsible_name
+            result.dataResponsibleRole = data.data_responsible_role
+            result.dataResponsibleDocType = data.data_responsible_doc_type
+            result.dataResponsibleDocNumber = data.data_responsible_doc_number
         }
+
+        return result
+
     } catch (error) {
         console.error('Error loading responsible data:', error)
         return null
@@ -53,6 +71,17 @@ export async function saveResponsibleData(
         const userId = sessionStorage.getItem('userId')
         if (!userId) throw new Error('No user ID found')
 
+        // 1. Update Organization CNPJ
+        if (data.cnpj !== undefined) {
+            const { error: orgError } = await supabase
+                .from('organizations')
+                .update({ cnpj: data.cnpj })
+                .eq('id', orgId)
+
+            if (orgError) throw orgError
+        }
+
+        // 2. Upsert Responsible Persons
         const { error } = await supabase
             .from('responsible_persons')
             .upsert({
@@ -77,7 +106,7 @@ export async function saveResponsibleData(
             updated_fields: Object.keys(data)
         })
     } catch (error) {
-        console.error('Error saving responsible data:', error)
+        console.error('Error saving responsible data:', JSON.stringify(error, null, 2))
         throw error
     }
 }
@@ -110,7 +139,7 @@ export async function logAction(
             })
 
         if (error) {
-            console.error('Error logging action:', error)
+            console.error('Error logging action:', JSON.stringify(error, null, 2))
         }
     } catch (error) {
         console.error('Error in logAction:', error)

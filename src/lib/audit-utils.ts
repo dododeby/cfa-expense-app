@@ -215,3 +215,40 @@ export const exportAuditHistoryToCSV = async (): Promise<void> => {
     link.click()
     document.body.removeChild(link)
 }
+
+/**
+ * Generic audit logging function for all action types
+ */
+export const logAuditAction = async (params: {
+    actionType: string
+    actionDetails?: any
+    accountId?: string
+    accountName?: string
+    targetUserId?: string
+    targetUserName?: string
+}): Promise<void> => {
+    try {
+        const orgId = sessionStorage.getItem('orgId')
+        const userId = sessionStorage.getItem('userId')
+        const userName = sessionStorage.getItem('userName') || sessionStorage.getItem('orgName') || 'Sistema'
+
+        if (!orgId || !userId) {
+            console.warn('Missing orgId or userId for audit logging')
+            return
+        }
+
+        const { error } = await supabase.from('audit_log').insert({
+            organization_id: orgId,
+            user_id: userId,
+            user_name: userName,
+            action_type: params.actionType,
+            action_details: params.actionDetails || {},
+            account_id: params.accountId,
+            account_name: params.accountName
+        })
+
+        if (error) throw error
+    } catch (error) {
+        console.error('Error logging audit action:', error)
+    }
+}

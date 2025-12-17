@@ -12,7 +12,9 @@ import {
     LogOut,
     BarChart3,
     Bell,
-    Settings
+    Settings,
+    UserPlus,
+    Printer
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -36,8 +38,12 @@ export default function DashboardLayout({
     const [errorCount, setErrorCount] = useState(0)
     const [unreadMessageCount, setUnreadMessageCount] = useState(0)
     const [newLegislationCount, setNewLegislationCount] = useState(0)
+    const [pendingRegistrationCount, setPendingRegistrationCount] = useState(0)
+    const [showWelcome, setShowWelcome] = useState(false)
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
+        setMounted(true)
         // Check authentication
         const checkAuth = async () => {
             const { data: { session } } = await supabase.auth.getSession()
@@ -150,6 +156,28 @@ export default function DashboardLayout({
                     }
                 }
 
+                // 3. Check Pending Registration Requests (Only for CFA)
+                if (isCFA) {
+                    const { data: pendingUsers, error: usersError } = await supabase
+                        .from('users')
+                        .select('id')
+                        .eq('status', 'pending')
+
+                    if (!usersError && pendingUsers) {
+                        setPendingRegistrationCount(pendingUsers.length)
+                    }
+                }
+
+                // 4. Check Welcome (For CRA only)
+                if (!isCFA) {
+                    const dismissed = localStorage.getItem(`welcomeDismissed_${orgId}`)
+                    if (!dismissed) {
+                        setShowWelcome(true)
+                    } else {
+                        setShowWelcome(false)
+                    }
+                }
+
                 setUnreadMessageCount(msgCount)
                 setNewLegislationCount(legCount)
 
@@ -176,16 +204,65 @@ export default function DashboardLayout({
         }
     }, [router])
 
-    const sidebarItems = [
+    const [expandedItems, setExpandedItems] = useState<string[]>([]) // Default collapsed
+
+    useEffect(() => {
+        // Auto-expand based on current path
+        if (pathname?.startsWith('/dashboard/preenchimento')) {
+            setExpandedItems(prev => prev.includes('Preenchimento') ? prev : [...prev, 'Preenchimento'])
+        }
+        if (pathname?.startsWith('/dashboard/consolidado')) {
+            setExpandedItems(prev => prev.includes('Consolidado') ? prev : [...prev, 'Consolidado'])
+        }
+    }, [pathname])
+
+    const toggleExpand = (title: string) => {
+        setExpandedItems(prev =>
+            prev.includes(title)
+                ? prev.filter(t => t !== title)
+                : [...prev, title]
+        )
+    }
+
+    const sidebarItems: any[] = [
         {
             title: "Dashboard",
-            href: "/dashboard",
+            href: "#",
             icon: LayoutDashboard,
+            children: [
+                {
+                    title: "Receitas",
+                    href: "/dashboard/dashboards/receitas",
+                    icon: BarChart3
+                },
+                {
+                    title: "Despesas",
+                    href: "/dashboard/dashboards/despesas",
+                    icon: BarChart3
+                },
+                {
+                    title: "Comparativo",
+                    href: "/dashboard/dashboards/comparativo",
+                    icon: BarChart3
+                }
+            ]
         },
         {
             title: "Preenchimento",
-            href: "/dashboard/preenchimento",
+            href: "#", // Parent item
             icon: FileSpreadsheet,
+            children: [
+                {
+                    title: "Receitas",
+                    href: "/dashboard/preenchimento/receitas",
+                    icon: BarChart3
+                },
+                {
+                    title: "Despesas",
+                    href: "/dashboard/preenchimento/despesas",
+                    icon: FileSpreadsheet
+                }
+            ]
         },
     ]
 
@@ -193,13 +270,37 @@ export default function DashboardLayout({
     if (orgType === 'CFA') {
         sidebarItems.push({
             title: "Consolidado",
-            href: "/dashboard/consolidado",
+            href: "#",
             icon: BarChart3,
+            children: [
+                {
+                    title: "Receitas",
+                    href: "/dashboard/consolidado/receitas",
+                    icon: BarChart3
+                },
+                {
+                    title: "Despesas",
+                    href: "/dashboard/consolidado/despesas",
+                    icon: FileSpreadsheet
+                }
+            ]
         })
+
+        // Add Cadastros menu for CFA only
+        sidebarItems.push({
+            title: "Cadastros",
+            href: "/dashboard/cadastros",
+            icon: UserPlus
+        } as typeof sidebarItems[0])
     }
 
-    // Add remaining items (reordered: Legislação, Informações, Histórico)
+    // Add remaining items (reordered: Relatórios, Legislação, Informações, Histórico)
     sidebarItems.push(
+        {
+            title: "Relatórios",
+            href: "/dashboard/relatorios",
+            icon: Printer, // Reusing icon for generic reports
+        },
         {
             title: "Legislação",
             href: "/dashboard/legislacao",
@@ -223,13 +324,16 @@ export default function DashboardLayout({
         router.push('/')
     }
 
-    const totalNotifications = errorCount + unreadMessageCount + newLegislationCount
+
+
+    const isCFA = orgType === 'CFA'
+    const totalNotifications = errorCount + unreadMessageCount + newLegislationCount + pendingRegistrationCount + (showWelcome && !isCFA ? 1 : 0)
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex h-screen bg-slate-50" suppressHydrationWarning={true}>
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-                <div className="p-6 border-b border-slate-200">
+            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col print:hidden">
+                <div className="p-6 border-b border-slate-200" suppressHydrationWarning={true}>
                     <h1 className="text-xl font-bold text-blue-900">Sistema CFA/CRA</h1>
                     {orgName && (
                         <p className="text-sm text-slate-500 mt-1">{orgName}</p>
@@ -238,7 +342,55 @@ export default function DashboardLayout({
 
                 <nav className="flex-1 p-4 space-y-1">
                     {sidebarItems.map((item) => {
-                        const isActive = pathname === item.href || pathname?.startsWith(item.href + "/")
+                        const isActive = item.href !== '#' && (pathname === item.href || pathname?.startsWith(item.href + "/"))
+                        const isExpanded = expandedItems.includes(item.title)
+
+                        // Check if any child is active
+                        const isChildActive = item.children?.some(child => pathname === child.href)
+
+                        if (item.children) {
+                            return (
+                                <div key={item.title} className="space-y-1" suppressHydrationWarning={true}>
+                                    <button
+                                        onClick={() => toggleExpand(item.title)}
+                                        className={cn(
+                                            "w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                            isChildActive
+                                                ? "bg-blue-50 text-blue-700"
+                                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-3" suppressHydrationWarning={true}>
+                                            <item.icon className="h-4 w-4" />
+                                            {item.title}
+                                        </div>
+                                    </button>
+
+                                    {isExpanded && (
+                                        <div className="pl-4 space-y-1 border-l-2 border-slate-100 ml-4">
+                                            {item.children.map(child => {
+                                                const isChildActive = pathname === child.href
+                                                return (
+                                                    <Link
+                                                        key={child.href}
+                                                        href={child.href}
+                                                        className={cn(
+                                                            "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                                                            isChildActive
+                                                                ? "text-blue-700 font-semibold"
+                                                                : "text-slate-500 hover:text-slate-900"
+                                                        )}
+                                                    >
+                                                        {child.title}
+                                                    </Link>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        }
+
                         return (
                             <Link
                                 key={item.href}
@@ -257,7 +409,7 @@ export default function DashboardLayout({
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-slate-200">
+                <div className="p-4 border-t border-slate-200" suppressHydrationWarning={true}>
                     <Button
                         variant="ghost"
                         className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -272,102 +424,154 @@ export default function DashboardLayout({
             {/* Main Content */}
             <main className="flex-1 overflow-auto flex flex-col">
                 {/* Header with Notification Bell */}
-                <header className="bg-white border-b border-slate-200 px-8 py-4 flex justify-end items-center">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" className="relative">
-                                <Bell className="h-5 w-5 text-slate-600" />
-                                {totalNotifications > 0 && (
-                                    <Badge
-                                        variant="destructive"
-                                        className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                                    >
-                                        {totalNotifications}
-                                    </Badge>
-                                )}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80" align="end">
-                            <div className="space-y-3">
-                                <h4 className="font-semibold text-sm">Notificações</h4>
-
-                                {/* Validation Errors - Red */}
-                                {errorCount > 0 && (
-                                    <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                                        <p className="text-sm text-red-800 font-medium">
-                                            {errorCount} erro(s) de validação
-                                        </p>
-                                        <p className="text-xs text-red-600 mt-1">
-                                            Há contas com Total preenchido mas Finalística vazia.
-                                        </p>
-                                        <Button
-                                            variant="link"
-                                            size="sm"
-                                            className="text-red-700 p-0 h-auto mt-2"
-                                            onClick={() => {
-                                                window.dispatchEvent(new Event('showValidationDetails'))
-                                                router.push('/dashboard/preenchimento')
-                                            }}
+                <header className="bg-white border-b border-slate-200 px-8 py-4 flex justify-end items-center print:hidden">
+                    {mounted ? (
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="ghost" size="sm" className="relative">
+                                    <Bell className="h-5 w-5 text-slate-600" />
+                                    {totalNotifications > 0 && (
+                                        <Badge
+                                            variant="destructive"
+                                            className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                                         >
-                                            Ver detalhes →
-                                        </Button>
-                                    </div>
-                                )}
+                                            {totalNotifications}
+                                        </Badge>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80" align="end">
+                                <div className="space-y-3">
+                                    <h4 className="font-semibold text-sm">Notificações</h4>
 
-                                {/* Unread Messages - Blue */}
-                                {unreadMessageCount > 0 && (
-                                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                                        <p className="text-sm text-blue-800 font-medium">
-                                            {unreadMessageCount} mensagem(ns) não lida(s)
-                                        </p>
-                                        <p className="text-xs text-blue-600 mt-1">
-                                            Você tem novas mensagens.
-                                        </p>
-                                        <Button
-                                            variant="link"
-                                            size="sm"
-                                            className="text-blue-700 p-0 h-auto mt-2"
-                                            onClick={() => {
-                                                router.push('/dashboard/informacoes?tab=duvidas')
-                                            }}
-                                        >
-                                            Ver mensagens →
-                                        </Button>
-                                    </div>
-                                )}
+                                    {/* Welcome Message - Emerald (First time only) */}
+                                    {showWelcome && !isCFA && (
+                                        <div className="bg-emerald-50 border border-emerald-200 rounded-md p-3">
+                                            <p className="text-sm text-emerald-800 font-medium">
+                                                Bem-vindo ao Sistema CFA/CRAs
+                                            </p>
+                                            <p className="text-xs text-emerald-600 mt-1">
+                                                Sistema de Consolidação das Contas Públicas - DN TCU 216/2025.
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="text-emerald-700 p-0 h-auto mt-2"
+                                                onClick={() => {
+                                                    const orgId = sessionStorage.getItem('orgId') || ''
+                                                    localStorage.setItem(`welcomeDismissed_${orgId}`, 'true')
+                                                    window.dispatchEvent(new Event('messagesRead')) // Trigger refresh
+                                                }}
+                                            >
+                                                Marcar como lido
+                                            </Button>
+                                        </div>
+                                    )}
 
-                                {/* New Legislation - Indigo */}
-                                {newLegislationCount > 0 && (
-                                    <div className="bg-indigo-50 border border-indigo-200 rounded-md p-3">
-                                        <p className="text-sm text-indigo-800 font-medium">
-                                            Nova Legislação
-                                        </p>
-                                        <p className="text-xs text-indigo-600 mt-1">
-                                            O CFA inseriu novo documento em legislação.
-                                        </p>
-                                        <Button
-                                            variant="link"
-                                            size="sm"
-                                            className="text-indigo-700 p-0 h-auto mt-2"
-                                            onClick={() => {
-                                                router.push('/dashboard/legislacao')
-                                            }}
-                                        >
-                                            Ver documentos →
-                                        </Button>
-                                    </div>
-                                )}
+                                    {/* Validation Errors - Red */}
+                                    {errorCount > 0 && (
+                                        <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                                            <p className="text-sm text-red-800 font-medium">
+                                                {errorCount} erro(s) de validação
+                                            </p>
+                                            <p className="text-xs text-red-600 mt-1">
+                                                Há contas com Total preenchido mas Finalística vazia.
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="text-red-700 p-0 h-auto mt-2"
+                                                onClick={() => {
+                                                    window.dispatchEvent(new Event('showValidationDetails'))
+                                                    router.push('/dashboard/preenchimento')
+                                                }}
+                                            >
+                                                Ver detalhes →
+                                            </Button>
+                                        </div>
+                                    )}
 
-                                {/* No notifications */}
-                                {totalNotifications === 0 && (
-                                    <p className="text-sm text-slate-500">Nenhuma notificação</p>
-                                )}
-                            </div>
-                        </PopoverContent>
-                    </Popover>
+                                    {/* Unread Messages - Blue */}
+                                    {unreadMessageCount > 0 && (
+                                        <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                            <p className="text-sm text-blue-800 font-medium">
+                                                {unreadMessageCount} mensagem(ns) não lida(s)
+                                            </p>
+                                            <p className="text-xs text-blue-600 mt-1">
+                                                Você tem novas mensagens.
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="text-blue-700 p-0 h-auto mt-2"
+                                                onClick={() => {
+                                                    router.push('/dashboard/informacoes?tab=duvidas')
+                                                }}
+                                            >
+                                                Ver mensagens →
+                                            </Button>
+                                        </div>
+                                    )}
+
+                                    {/* New Legislation - Indigo */}
+                                    {newLegislationCount > 0 && (
+                                        <div className="bg-indigo-50 border border-indigo-200 rounded-md p-3">
+                                            <p className="text-sm text-indigo-800 font-medium">
+                                                Nova Legislação
+                                            </p>
+                                            <p className="text-xs text-indigo-600 mt-1">
+                                                O CFA inseriu novo documento em legislação.
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="text-indigo-700 p-0 h-auto mt-2"
+                                                onClick={() => {
+                                                    router.push('/dashboard/legislacao')
+                                                }}
+                                            >
+                                                Ver documentos →
+                                            </Button>
+                                        </div>
+                                    )}
+
+                                    {/* Pending Registrations - Orange (Only for CFA) */}
+                                    {pendingRegistrationCount > 0 && (
+                                        <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
+                                            <p className="text-sm text-orange-800 font-medium">
+                                                {pendingRegistrationCount} solicitação(ões) de cadastro
+                                            </p>
+                                            <p className="text-xs text-orange-600 mt-1">
+                                                Há novas solicitações de cadastro aguardando aprovação.
+                                            </p>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="text-orange-700 p-0 h-auto mt-2"
+                                                onClick={() => {
+                                                    router.push('/dashboard/usuarios')
+                                                }}
+                                            >
+                                                Gerenciar cadastros →
+                                            </Button>
+                                        </div>
+                                    )}
+
+                                    {/* No notifications */}
+                                    {totalNotifications === 0 && (
+                                        <p className="text-sm text-slate-500">Nenhuma notificação</p>
+                                    )}
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    ) : (
+                        <Button variant="ghost" size="sm" className="relative">
+                            <Bell className="h-5 w-5 text-slate-600" />
+                        </Button>
+                    )}
                 </header>
 
-                <div className="p-8 flex-1">
+                <div className="p-8 flex-1" suppressHydrationWarning={true}>
                     {children}
                 </div>
             </main>

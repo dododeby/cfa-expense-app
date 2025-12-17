@@ -25,6 +25,7 @@ function InformacoesContent() {
     const searchParams = useSearchParams()
     const [orgType, setOrgType] = useState<string>('')
     const [orgName, setOrgName] = useState<string>('')
+    const [orgId, setOrgId] = useState<string>('')
     const [messages, setMessages] = useState<Message[]>([])
     const [newMessage, setNewMessage] = useState('')
     const [activeTab, setActiveTab] = useState<string>('informacoes')
@@ -34,8 +35,10 @@ function InformacoesContent() {
     useEffect(() => {
         const type = sessionStorage.getItem('orgType') || ''
         const name = sessionStorage.getItem('orgName') || ''
+        const id = sessionStorage.getItem('orgId') || ''
         setOrgType(type)
         setOrgName(name)
+        setOrgId(id)
 
         // Set initial tab based on URL param or user type
         const tabParam = searchParams.get('tab')
@@ -71,8 +74,8 @@ function InformacoesContent() {
 
             // Update last viewed timestamp for broadcast messages logic
             // Use orgId in key to isolate sessions on same browser
-            const orgId = sessionStorage.getItem('orgId') || ''
-            const storageKey = `lastViewedMessages_${orgId}`
+            const currentOrgId = sessionStorage.getItem('orgId') || ''
+            const storageKey = `lastViewedMessages_${currentOrgId}`
             localStorage.setItem(storageKey, new Date().toISOString())
 
             // Handle "Read" status in DB only for direct interactions
@@ -119,7 +122,7 @@ function InformacoesContent() {
         try {
             const messageData = {
                 type: isCFA ? 'cfa_to_cras' : 'cra_to_cfa',
-                sender_org: orgName,
+                sender_org: orgId, // USE ID NOT NAME for RLS check
                 recipient_org: isCFA ? 'ALL_CRAS' : 'CFA',
                 content: newMessage,
                 read: false
@@ -158,7 +161,7 @@ function InformacoesContent() {
         if (isCFA) {
             return msg.type === 'cra_to_cfa'
         } else {
-            return msg.type === 'cfa_to_cras' || (msg.type === 'cra_to_cfa' && msg.from === orgName)
+            return msg.type === 'cfa_to_cras' || (msg.type === 'cra_to_cfa' && msg.from === orgId)
         }
     })
 

@@ -120,6 +120,29 @@ export default function ResponsibleForm() {
                                     required
                                 />
                             </div>
+
+                            <div className="md:col-span-2 space-y-2">
+                                <Label htmlFor="cnpj">CNPJ da Unidade *</Label>
+                                <Input
+                                    id="cnpj"
+                                    value={formData.cnpj || ''}
+                                    onChange={(e) => {
+                                        // Basic formatting XX.XXX.XXX/YYYY-ZZ
+                                        let val = e.target.value.replace(/\D/g, '')
+                                        if (val.length > 14) val = val.slice(0, 14)
+
+                                        // Apply mask
+                                        if (val.length > 12) val = val.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, "$1.$2.$3/$4-$5")
+                                        else if (val.length > 8) val = val.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})/, "$1.$2.$3/$4")
+                                        else if (val.length > 5) val = val.replace(/^(\d{2})(\d{3})(\d{3})/, "$1.$2.$3")
+                                        else if (val.length > 2) val = val.replace(/^(\d{2})(\d{3})/, "$1.$2")
+
+                                        setFormData({ ...formData, cnpj: val })
+                                    }}
+                                    placeholder="00.000.000/0000-00"
+                                    required
+                                />
+                            </div>
                         </div>
                     </div>
 
