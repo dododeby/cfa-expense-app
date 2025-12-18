@@ -125,6 +125,10 @@ export function TabbedExpenseGrid() {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editValue, setEditValue] = useState("")
 
+    // Check if past delivery deadline (31/03/2026)
+    const deliveryDeadline = new Date('2026-03-31T23:59:59')
+    const isPastDeadline = new Date() > deliveryDeadline
+
     // Load custom descriptions
     useEffect(() => {
         const loadDescriptions = async () => {
@@ -732,6 +736,8 @@ export function TabbedExpenseGrid() {
                                                                     onChange={(val) => handleValueChange(account.id, 'total', val)}
                                                                     onFocus={() => handleInputFocus(data[account.id]?.total || 0)}
                                                                     onBlur={() => handleInputBlur(account.id, 'total')}
+                                                                    disabled={isPastDeadline}
+                                                                    className={isPastDeadline ? "bg-slate-100 cursor-not-allowed" : ""}
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
@@ -740,10 +746,10 @@ export function TabbedExpenseGrid() {
                                                                     onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
                                                                     onFocus={() => handleInputFocus(data[account.id]?.finalistica || 0)}
                                                                     onBlur={() => handleInputBlur(account.id, 'finalistica')}
-                                                                    disabled={account.id === '1.10.3.5'}
+                                                                    disabled={account.id === '1.10.3.5' || isPastDeadline}
                                                                     className={cn(
                                                                         hasValidationError && "border-red-500 bg-red-50",
-                                                                        account.id === '1.10.3.5' && "bg-slate-100 text-slate-500 cursor-not-allowed"
+                                                                        (account.id === '1.10.3.5' || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
                                                                     )}
                                                                 />
                                                             </TableCell>

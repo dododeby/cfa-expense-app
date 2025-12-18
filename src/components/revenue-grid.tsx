@@ -98,6 +98,10 @@ export default function RevenueGrid() {
 
     const accounts: RevenueAccount[] = allRevenuesData as RevenueAccount[]
 
+    // Check if past delivery deadline (31/03/2026)
+    const deliveryDeadline = new Date('2026-03-31T23:59:59')
+    const isPastDeadline = new Date() > deliveryDeadline
+
     const loadData = useCallback(async () => {
         setLoading(true)
         const loadedData = await loadRevenueData()
@@ -281,6 +285,8 @@ export default function RevenueGrid() {
                                                     onChange={(newVal) => handleValueChange(account.id, newVal)}
                                                     onFocus={() => handleInputFocus(val || 0)}
                                                     onBlur={() => handleInputBlur(account.id)}
+                                                    disabled={isPastDeadline}
+                                                    className={isPastDeadline ? "bg-slate-100 cursor-not-allowed" : ""}
                                                 />
                                             )}
                                         </TableCell>
