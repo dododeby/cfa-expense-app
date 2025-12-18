@@ -278,20 +278,43 @@ function DashboardContent({
                         <CardTitle className="text-sm font-medium">Status</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {!hasData ? (
-                            <>
-                                <div className="text-2xl font-bold text-red-600">Em Aberto</div>
-                                <p className="text-xs text-red-600">Preencha os dados</p>
-                            </>
-                        ) : (
-                            <>
-                                <div className="text-2xl font-bold text-green-600">Em Preenchimento</div>
-                                <p className="text-xs text-green-600">
-                                    Salvo automaticamente<br />
-                                    {lastSaved}
-                                </p>
-                            </>
-                        )}
+                        {(() => {
+                            // Delivery deadline: 31/03/2026
+                            const deliveryDeadline = new Date('2026-03-31T23:59:59')
+                            const currentDate = new Date()
+                            const isPastDeadline = currentDate > deliveryDeadline
+
+                            if (isPastDeadline) {
+                                // After deadline - show as delivered
+                                return (
+                                    <>
+                                        <div className="text-2xl font-bold text-blue-600">Entregue</div>
+                                        <p className="text-xs text-blue-600">
+                                            Prazo encerrado em 31/03/2026
+                                        </p>
+                                    </>
+                                )
+                            } else if (!hasData) {
+                                // Before deadline and no data
+                                return (
+                                    <>
+                                        <div className="text-2xl font-bold text-red-600">Em Aberto</div>
+                                        <p className="text-xs text-red-600">Preencha os dados</p>
+                                    </>
+                                )
+                            } else {
+                                // Before deadline with data
+                                return (
+                                    <>
+                                        <div className="text-2xl font-bold text-green-600">Em Preenchimento</div>
+                                        <p className="text-xs text-green-600">
+                                            Salvo automaticamente<br />
+                                            {lastSaved}
+                                        </p>
+                                    </>
+                                )
+                            }
+                        })()}
                     </CardContent>
                 </Card>
             </div>
