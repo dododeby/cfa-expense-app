@@ -45,8 +45,17 @@ export async function POST(request: NextRequest) {
 
         if (insertError) {
             console.error('🔴 [REGISTER] Insert error:', insertError)
+            console.error('🔴 [REGISTER] Error details:', {
+                message: insertError.message,
+                code: insertError.code,
+                details: insertError.details,
+                hint: insertError.hint
+            })
             return NextResponse.json(
-                { error: 'Erro ao enviar solicitação' },
+                {
+                    error: 'Erro ao enviar solicitação',
+                    details: insertError.message
+                },
                 { status: 500 }
             )
         }

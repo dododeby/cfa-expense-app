@@ -13,7 +13,16 @@ export async function GET() {
 
         if (usersError) {
             console.error('🔴 [GET_USERS] Error loading users:', usersError)
-            return NextResponse.json({ error: 'Failed to load users' }, { status: 500 })
+            console.error('🔴 [GET_USERS] Error details:', {
+                message: usersError.message,
+                code: usersError.code,
+                details: usersError.details,
+                hint: usersError.hint
+            })
+            return NextResponse.json({
+                error: 'Failed to load users',
+                details: usersError.message
+            }, { status: 500 })
         }
 
         console.log(`✅ [GET_USERS] Loaded ${users?.length || 0} users`)
