@@ -217,11 +217,14 @@ export default function DashboardLayout({
     }, [pathname])
 
     const toggleExpand = (title: string) => {
-        setExpandedItems(prev =>
-            prev.includes(title)
-                ? prev.filter(t => t !== title)
-                : [...prev, title]
-        )
+        setExpandedItems(prev => {
+            // If clicking on an already expanded item, close it
+            if (prev.includes(title)) {
+                return prev.filter(t => t !== title)
+            }
+            // Otherwise, close all others and open only this one
+            return [title]
+        })
     }
 
     const sidebarItems: any[] = [
@@ -334,9 +337,10 @@ export default function DashboardLayout({
             {/* Sidebar */}
             <aside className="w-64 bg-white border-r border-slate-200 flex flex-col print:hidden">
                 <div className="p-6 border-b border-slate-200" suppressHydrationWarning={true}>
-                    <h1 className="text-xl font-bold text-blue-900">Sistema CFA/CRA</h1>
+                    <h1 className="text-xl font-bold text-blue-900">Sistema CFA/CRA's</h1>
+                    <p className="text-xs text-slate-400 mt-1">Contas consolidadas</p>
                     {orgName && (
-                        <p className="text-sm text-slate-500 mt-1">{orgName}</p>
+                        <p className="text-sm text-slate-600 mt-1 font-medium">{orgName}</p>
                     )}
                 </div>
 

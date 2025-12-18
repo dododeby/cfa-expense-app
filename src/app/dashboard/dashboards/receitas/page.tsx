@@ -80,7 +80,7 @@ function RevenueDashboardContent() {
             // Small delay to ensure charts are rendered
             setTimeout(() => {
                 window.print()
-            }, 5000)
+            }, 3000)
         }
     }, [loading, isPrintMode])
 
