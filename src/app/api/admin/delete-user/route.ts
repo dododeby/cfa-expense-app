@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
             .eq('id', userId)
             .single()
 
+        // Prevent deleting the protected admin user
+        if (userData?.email === 'cfa@admin.com') {
+            console.log('🔴 [DELETE] Attempted to delete protected admin user')
+            return NextResponse.json(
+                { error: 'O usuário cfa@admin.com não pode ser excluído' },
+                { status: 403 }
+            )
+        }
+
         // Log the deletion action BEFORE actually deleting
         const cookieStore = await cookies()
         const authCookie = cookieStore.get('sb-access-token')

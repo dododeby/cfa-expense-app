@@ -15,6 +15,30 @@ export async function POST(request: NextRequest) {
 
         console.log(`🔵 [SUSPEND] ${suspend ? 'Suspending' : 'Reactivating'} user:`, userId)
 
+        // Check if user is the protected admin
+        const { data: userData, error: fetchError } = await supabaseAdmin
+            .from('users')
+            .select('email')
+            .eq('id', userId)
+            .single()
+
+        if (fetchError) {
+            console.error('🔴 [SUSPEND] Error fetching user:', fetchError)
+            return NextResponse.json(
+                { error: 'Erro ao buscar usuário' },
+                { status: 500 }
+            )
+        }
+
+        // Prevent suspending the protected admin user
+        if (userData?.email === 'cfa@admin.com') {
+            console.log('🔴 [SUSPEND] Attempted to suspend protected admin user')
+            return NextResponse.json(
+                { error: 'O usuário cfa@admin.com não pode ser suspenso' },
+                { status: 403 }
+            )
+        }
+
         // Update user status in database
         const { error: updateError } = await supabaseAdmin
             .from('users')
@@ -34,8 +58,8 @@ export async function POST(request: NextRequest) {
 
         console.log(`✅ [SUSPEND] User ${suspend ? 'suspended' : 'reactivated'} successfully`)
 
-        // Get user info for audit log
-        const { data: userData } = await supabaseAdmin
+        // Get user full name for audit log (email already fetched above)
+        const { data: userFullData } = await supabaseAdmin
             .from('users')
             .select('email, full_name')
             .eq('id', userId)
@@ -48,12 +72,12 @@ export async function POST(request: NextRequest) {
             authCookie?.value || ''
         )
 
-        if (currentUser && userData) {
+        if (currentUser && userFullData) {
             await supabaseAdmin.from('user_actions_log').insert({
                 action_type: suspend ? 'suspend' : 'reactivate',
                 target_user_id: userId,
-                target_user_email: userData.email,
-                target_user_name: userData.full_name,
+                target_user_email: userFullData.email,
+                target_user_name: userFullData.full_name,
                 performed_by_id: currentUser.id,
                 performed_by_email: currentUser.email || 'unknown',
                 details: {}

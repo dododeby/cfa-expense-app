@@ -434,31 +434,39 @@ export default function CadastrosPage() {
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleSuspend(user)}
-                                                                disabled={processing === user.id}
-                                                                className="cursor-pointer"
-                                                            >
-                                                                {user.status === 'suspended' ? (
-                                                                    <>
-                                                                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                                                                        Reativar
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <XCircle className="mr-2 h-4 w-4 text-orange-600" />
-                                                                        Suspender
-                                                                    </>
-                                                                )}
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleDelete(user)}
-                                                                disabled={processing === user.id}
-                                                                className="cursor-pointer text-red-600 focus:text-red-600"
-                                                            >
-                                                                <XCircle className="mr-2 h-4 w-4" />
-                                                                Excluir
-                                                            </DropdownMenuItem>
+                                                            {user.email === 'cfa@admin.com' ? (
+                                                                <DropdownMenuItem disabled className="text-slate-400">
+                                                                    Usuário protegido
+                                                                </DropdownMenuItem>
+                                                            ) : (
+                                                                <>
+                                                                    <DropdownMenuItem
+                                                                        onClick={() => handleSuspend(user)}
+                                                                        disabled={processing === user.id}
+                                                                        className="cursor-pointer"
+                                                                    >
+                                                                        {user.status === 'suspended' ? (
+                                                                            <>
+                                                                                <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                                                                                Reativar
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <XCircle className="mr-2 h-4 w-4 text-orange-600" />
+                                                                                Suspender
+                                                                            </>
+                                                                        )}
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem
+                                                                        onClick={() => handleDelete(user)}
+                                                                        disabled={processing === user.id}
+                                                                        className="cursor-pointer text-red-600 focus:text-red-600"
+                                                                    >
+                                                                        <XCircle className="mr-2 h-4 w-4" />
+                                                                        Excluir
+                                                                    </DropdownMenuItem>
+                                                                </>
+                                                            )}
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </TableCell>
