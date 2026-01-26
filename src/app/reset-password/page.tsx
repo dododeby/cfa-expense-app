@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -20,12 +20,14 @@ function ResetPasswordContent() {
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
     const [linkError, setLinkError] = useState<string | null>(null)
+    const processedRef = useRef(false)
 
-    // Check for errors in URL (from Supabase callback)
+    // Check for errors in URL (from Supabase callback) or handle code exchange directly
     useEffect(() => {
         const errorParam = searchParams.get('error')
         const errorDescription = searchParams.get('error_description')
         const errorCode = searchParams.get('error_code')
+        const code = searchParams.get('code')
 
         if (errorParam || errorCode) {
             if (errorCode === 'otp_expired') {
@@ -35,6 +37,20 @@ function ResetPasswordContent() {
             } else {
                 setLinkError('Link inválido. Por favor, solicite um novo link de recuperação.')
             }
+        } else if (code) {
+            // If we have a code, we need to exchange it for a session
+            // This happens if the email link points directly to /reset-password
+            if (processedRef.current) return
+            processedRef.current = true
+
+            supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+                if (error) {
+                    console.error('Code exchange error:', error)
+                    setLinkError('Link inválido ou expirado. ' + error.message)
+                }
+                // If success, the session is set, and the user can update password
+                // We can optionally remove the code from URL for cleanliness, but likely not strictly needed
+            })
         }
     }, [searchParams])
 

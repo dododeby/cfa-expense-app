@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -8,9 +8,14 @@ function AuthCallbackContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [error, setError] = useState<string | null>(null)
+    const processedRef = useRef(false)
 
     useEffect(() => {
         const handleCallback = async () => {
+            // Prevent double execution in React Strict Mode which invalidates the one-time code
+            if (processedRef.current) return
+            processedRef.current = true
+
             const code = searchParams.get('code')
             const type = searchParams.get('type') // 'recovery', 'signup', etc.
             const next = searchParams.get('next') || '/dashboard'
