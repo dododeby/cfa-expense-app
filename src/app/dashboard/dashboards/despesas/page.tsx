@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import allAccountsData from "@/lib/all-accounts.json"
 import { loadExpenseData, loadConsolidatedData, loadOrganizations } from "@/lib/expense-data"
+import { loadDeclaration } from "@/lib/declarations"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Account {
@@ -27,6 +28,7 @@ function DashboardPageContent() {
     const [expenseData, setExpenseData] = useState<any>({})
     const [loading, setLoading] = useState(true)
     const [chartFilter, setChartFilter] = useState<string>('all')
+    const [declaration, setDeclaration] = useState<any>(null)
 
     const searchParams = useSearchParams()
     const isPrintMode = searchParams.get('print') === 'true'
@@ -40,6 +42,10 @@ function DashboardPageContent() {
             // Load expense data from Supabase
             const data = await loadExpenseData()
             setExpenseData(data)
+
+            // Load declaration status
+            const dec = await loadDeclaration()
+            setDeclaration(dec)
 
             // Check if there's any data
             const hasAnyData = Object.keys(data).length > 0
@@ -168,6 +174,7 @@ function DashboardPageContent() {
                             groupData={groupData}
                             chartFilter={chartFilter}
                             setChartFilter={setChartFilter}
+                            declaration={declaration}
                         />
                     </TabsContent>
 
@@ -190,6 +197,7 @@ function DashboardPageContent() {
                     groupData={groupData}
                     chartFilter={chartFilter}
                     setChartFilter={setChartFilter}
+                    declaration={declaration}
                 />
             )}
         </div>
@@ -216,6 +224,7 @@ interface DashboardContentProps {
     groupData: { name: string; finalistica: number; apoio: number }[];
     chartFilter: string;
     setChartFilter: (value: string) => void;
+    declaration: any;
 }
 
 function DashboardContent({
@@ -229,7 +238,8 @@ function DashboardContent({
     categoryData,
     groupData,
     chartFilter,
-    setChartFilter
+    setChartFilter,
+    declaration
 }: DashboardContentProps) {
     return (
         <>
@@ -284,12 +294,22 @@ function DashboardContent({
                             const currentDate = new Date()
                             const isPastDeadline = currentDate > deliveryDeadline
 
-                            if (isPastDeadline) {
-                                // After deadline - show as delivered
+                            if (declaration) {
                                 return (
                                     <>
                                         <div className="text-2xl font-bold text-blue-600">Entregue</div>
                                         <p className="text-xs text-blue-600">
+                                            Em {new Date(declaration.delivery_date).toLocaleDateString('pt-BR')}
+                                            {declaration.is_rectification && ' (Retificada)'}
+                                        </p>
+                                    </>
+                                )
+                            } else if (isPastDeadline) {
+                                // After deadline - show as pending/encerrado
+                                return (
+                                    <>
+                                        <div className="text-2xl font-bold text-red-600">Não Entregue</div>
+                                        <p className="text-xs text-red-600">
                                             Prazo encerrado em 31/03/2026
                                         </p>
                                     </>
@@ -298,8 +318,8 @@ function DashboardContent({
                                 // Before deadline and no data
                                 return (
                                     <>
-                                        <div className="text-2xl font-bold text-red-600">Em Aberto</div>
-                                        <p className="text-xs text-red-600">Preencha os dados</p>
+                                        <div className="text-2xl font-bold text-amber-600">Em Aberto</div>
+                                        <p className="text-xs text-amber-600">Preencha os dados</p>
                                     </>
                                 )
                             } else {

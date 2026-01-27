@@ -13,6 +13,12 @@ export interface Declaration {
     total_finalistica: number
     total_apoio: number
     snapshot: any
+    responsible_unit_name?: string
+    responsible_unit_cra?: string
+    responsible_data_name?: string
+    responsible_data_role?: string
+    responsible_data_doc_type?: string
+    responsible_data_doc_number?: string
 }
 
 export async function loadDeclaration(): Promise<Declaration | null> {
@@ -37,6 +43,14 @@ export async function loadDeclaration(): Promise<Declaration | null> {
 export async function submitDeclaration(
     totals: { revenue: number; expense: number; finalistica: number; apoio: number },
     snapshot: any,
+    responsible: {
+        unitName: string,
+        unitCra: string,
+        dataName: string,
+        dataRole: string,
+        dataDocType?: string,
+        dataDocNumber?: string
+    },
     isRectification: boolean = false
 ): Promise<Declaration | null> {
     const orgId = sessionStorage.getItem('orgId')
@@ -80,6 +94,14 @@ export async function submitDeclaration(
             total_finalistica: totals.finalistica,
             total_apoio: totals.apoio,
             snapshot: snapshot,
+
+            responsible_unit_name: responsible.unitName,
+            responsible_unit_cra: responsible.unitCra,
+            responsible_data_name: responsible.dataName,
+            responsible_data_role: responsible.dataRole,
+            responsible_data_doc_type: responsible.dataDocType,
+            responsible_data_doc_number: responsible.dataDocNumber,
+
             delivery_date: new Date().toISOString()
         })
         .select()

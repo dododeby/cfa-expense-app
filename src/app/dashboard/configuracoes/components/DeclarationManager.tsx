@@ -27,6 +27,7 @@ export default function DeclarationManager() {
     const [loading, setLoading] = useState(true)
     const [declaration, setDeclaration] = useState<Declaration | null>(null)
     const [totals, setTotals] = useState<any>(null)
+    const [responsibleData, setResponsibleData] = useState<any>(null)
     const [isConfirming, setIsConfirming] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showReceipt, setShowReceipt] = useState(false)
@@ -67,6 +68,7 @@ export default function DeclarationManager() {
             setValidationError("É necessário preencher todos os dados dos Responsáveis antes de entregar.")
             return
         }
+        setResponsibleData(responsible)
 
         // 2. Load Totals
         const revenues = await loadRevenueData()
@@ -110,6 +112,14 @@ export default function DeclarationManager() {
                 {
                     revenues: totals.rawRevenues,
                     expenses: totals.rawExpenses
+                },
+                {
+                    unitName: responsibleData.unitResponsibleName,
+                    unitCra: responsibleData.unitResponsibleCraNumber,
+                    dataName: responsibleData.dataResponsibleName,
+                    dataRole: responsibleData.dataResponsibleRole,
+                    dataDocType: 'CPF', // default/assumed or from data
+                    dataDocNumber: responsibleData.dataResponsibleCpf
                 },
                 isRectification
             )
@@ -342,6 +352,25 @@ function ReceiptView({ declaration }: { declaration: Declaration }) {
                         <div>
                             <span className="font-bold block text-slate-700 uppercase text-xs">Unidade</span>
                             <span className="text-lg">{declaration.organization_name || 'N/A'}</span>
+                        </div>
+                        {/* We might not have CNPJ in declaration snapshot yet, but can try to display if we had it, or just skip for this view since it's "quick view" */}
+
+                        <div>
+                            <span className="font-bold block text-slate-700 uppercase text-xs">Responsável pela Unidade (Presidente)</span>
+                            <span className="text-lg">{declaration.responsible_unit_name || 'N/A'}</span>
+                        </div>
+                        <div>
+                            <span className="font-bold block text-slate-700 uppercase text-xs">CRA (Presidente)</span>
+                            <span className="text-lg">{declaration.responsible_unit_cra || 'N/A'}</span>
+                        </div>
+
+                        <div>
+                            <span className="font-bold block text-slate-700 uppercase text-xs">Responsável pelo Preenchimento</span>
+                            <span className="text-lg">{declaration.responsible_data_name || 'N/A'}</span>
+                        </div>
+                        <div>
+                            <span className="font-bold block text-slate-700 uppercase text-xs">Cargo/Função</span>
+                            <span className="text-lg">{declaration.responsible_data_role || 'N/A'}</span>
                         </div>
                     </div>
 
