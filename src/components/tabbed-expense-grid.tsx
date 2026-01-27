@@ -258,7 +258,7 @@ export function TabbedExpenseGrid() {
         const numValue = value
 
         // Auto-fill logic for 100% Finalística accounts
-        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.11.3.5'] // Jetons, CIP, Cota Parte
+        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.12.1.5'] // Jetons, CIP, Cota Parte
 
         let newTotal = field === 'total' ? numValue : (data[accountId]?.total || 0)
         let newFinalistica = field === 'finalistica' ? numValue : (data[accountId]?.finalistica || 0)
@@ -286,7 +286,7 @@ export function TabbedExpenseGrid() {
         const previousValue = activeValueRef.current
 
         // Auto-fill accounts
-        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.11.3.5']
+        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.12.1.5']
 
         // Only save if value changed
         if (newValue !== previousValue || (autoFillAccounts.includes(accountId) && field === 'total')) {
@@ -748,10 +748,10 @@ export function TabbedExpenseGrid() {
                                                                     onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
                                                                     onFocus={() => handleInputFocus(data[account.id]?.finalistica || 0)}
                                                                     onBlur={() => handleInputBlur(account.id, 'finalistica')}
-                                                                    disabled={['1.5.1.1', '1.7.1.10', '1.11.3.5'].includes(account.id) || isPastDeadline}
+                                                                    disabled={['1.5.1.1', '1.7.1.10', '1.12.1.5'].includes(account.id) || isPastDeadline}
                                                                     className={cn(
                                                                         hasValidationError && "border-red-500 bg-red-50",
-                                                                        (['1.5.1.1', '1.7.1.10', '1.11.3.5'].includes(account.id) || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
+                                                                        (['1.5.1.1', '1.7.1.10', '1.12.1.5'].includes(account.id) || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
                                                                     )}
                                                                 />
                                                             </TableCell>

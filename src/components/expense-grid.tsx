@@ -131,7 +131,7 @@ export function ExpenseGrid() {
             }))
         }
         // Cota Parte Logic (ID: 1.11.3.5) - 100% Finalística
-        else if (accountId === '1.11.3.5' && field === 'total') {
+        else if (accountId === '1.12.1.5' && field === 'total') {
             setData(prev => ({
                 ...prev,
                 [accountId]: {

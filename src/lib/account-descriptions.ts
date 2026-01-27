@@ -152,11 +152,13 @@ export const accountDescriptions: Record<string, string> = {
     "1.11.1.2": "Atualização. Geralmente Apoio.",
     "1.11.2.1": "Taxas Bancárias. 100% Finalística (Boletos anuidade).",
     "1.11.2.2": "Cobrança. 100% Finalística (Tarifas cobrança).",
-    "1.11.3.1": "Apoio Eventos. 100% Finalística (Fomento à profissão).",
-    "1.11.3.2": "Proder Individual. 100% Finalística (Projeto Finalístico).",
-    "1.11.3.3": "Proder Coletivo. 100% Finalística (Projeto Finalístico).",
-    "1.11.3.4": "Crédito Capital. Transf. Capital.",
-    "1.11.3.5": "Cota Parte. 100% Finalística (Preenchimento automático - não editável).",
+
+    // 1.12 Transferências
+    "1.12.1.1": "Apoio Eventos. 100% Finalística (Fomento à profissão).",
+    "1.12.1.2": "Proder Individual. 100% Finalística (Projeto Finalístico).",
+    "1.12.1.3": "Proder Coletivo. 100% Finalística (Projeto Finalístico).",
+    "1.12.1.4": "Crédito Capital. Transf. Capital.",
+    "1.12.1.5": "Cota Parte. 100% Finalística (Preenchimento automático - não editável).",
 
     // 2 Capital
     "2.1.1.1": "Obras. Rateio ou Finalística se obra exclusiva setor fim (ex: Sala Fiscal).",
