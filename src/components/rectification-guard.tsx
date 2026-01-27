@@ -32,16 +32,19 @@ export default function RectificationGuard({ children }: { children: React.React
             const pastDeadline = now > deadline
             setIsPastDeadline(pastDeadline)
 
-            const savedRectifying = sessionStorage.getItem('isRectifying') === 'true'
-
-            // Locked if: Declaration exists AND Not explicitly unlocked AND Not past deadline (past deadline handles separately)
-            // Actually, if past deadline, it is locked forever.
-            // If before deadline and delivered and not rectifying, it is locked with option to unlock.
-
-            // Locked if: Declaration exists with status='submitted' AND Not explicitly unlocked
-            if (dec && dec.status === 'submitted' && !savedRectifying) {
+            // ALWAYS prioritize database status over sessionStorage
+            if (dec && dec.status === 'submitted') {
+                // If DB says submitted, clear any stale rectifying flag and lock
+                sessionStorage.removeItem('isRectifying')
                 setIsLocked(true)
                 setShowConfirm(true)
+            } else if (dec && dec.status === 'draft') {
+                // If DB says draft, keep unlocked (user is rectifying)
+                sessionStorage.setItem('isRectifying', 'true')
+                setIsLocked(false)
+            } else {
+                // No declaration exists - unlocked
+                setIsLocked(false)
             }
 
             setLoading(false)
@@ -132,12 +135,6 @@ export default function RectificationGuard({ children }: { children: React.React
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
-
-                {/* Render children hidden or blurred? If we don't render children, data might not load if it depends on mount. 
-                    Better to not render children at all to be safe and save performance, 
-                    OR render them hidden if we need to keep state. 
-                    Given the requirement "bloqueado", not rendering is safest.
-                */}
             </div>
         )
     }
