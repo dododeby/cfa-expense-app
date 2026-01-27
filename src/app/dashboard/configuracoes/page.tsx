@@ -1,3 +1,4 @@
+"use client"
 import dynamic from 'next/dynamic'
 import ResponsibleForm from "./components/ResponsibleForm"
 import AuditHistory from "./components/AuditHistory"
