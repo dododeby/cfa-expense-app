@@ -10,7 +10,13 @@ const TabsList = dynamic(() => import("@/components/ui/tabs").then(mod => mod.Ta
 const TabsTrigger = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsTrigger), { ssr: false })
 const TabsContent = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsContent), { ssr: false })
 
+import CfaOverview from "./components/CfaOverview"
+
+// ... existing imports
+
 export default function ConfiguracoesPage() {
+    const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
+
     return (
         <div className="space-y-6" suppressHydrationWarning={true}>
             <div suppressHydrationWarning={true}>
@@ -20,11 +26,18 @@ export default function ConfiguracoesPage() {
                 </p>
             </div>
 
-            <Tabs defaultValue="responsaveis" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <Tabs defaultValue={isCFA ? "visao-geral" : "responsaveis"} className="w-full">
+                <TabsList className={`grid w-full ${isCFA ? 'grid-cols-3' : 'grid-cols-2'} max-w-xl`}>
+                    {isCFA && <TabsTrigger value="visao-geral">Visão Geral (CFA)</TabsTrigger>}
                     <TabsTrigger value="responsaveis">Cadastro e Entrega</TabsTrigger>
                     <TabsTrigger value="historico">Histórico de Alterações</TabsTrigger>
                 </TabsList>
+
+                {isCFA && (
+                    <TabsContent value="visao-geral" className="mt-6">
+                        <CfaOverview />
+                    </TabsContent>
+                )}
 
                 <TabsContent value="responsaveis" className="space-y-8 mt-6">
                     <ResponsibleForm />
