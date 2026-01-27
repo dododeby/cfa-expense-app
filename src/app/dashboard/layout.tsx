@@ -14,7 +14,8 @@ import {
     Bell,
     Settings,
     UserPlus,
-    Printer
+    Printer,
+    Send
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -315,9 +316,9 @@ export default function DashboardLayout({
             icon: MessageCircleQuestion,
         },
         {
-            title: "Configurações",
+            title: "Entrega de Declaração",
             href: "/dashboard/configuracoes",
-            icon: Settings,
+            icon: Send,
         }
     )
 

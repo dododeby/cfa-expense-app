@@ -1134,6 +1134,27 @@
     "name": "Cota Parte ao CFA"
   },
   {
+    "id": "1.12",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "1.12.1",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "1.12.1.1",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Restos a Pagar",
+    "type": "Analítica",
+    "name": "Restos a Pagar"
+  },
+  {
     "id": "2",
     "group": "2 - Despesas de Capital",
     "subgroup": "",
@@ -1391,5 +1412,26 @@
     "subgroup": "2.6 Transferencias de Capital",
     "type": "Analítica",
     "name": "Reserva de Contingencia Orçamentária"
+  },
+  {
+    "id": "2.7",
+    "group": "2 - Despesas de Capital",
+    "subgroup": "2.7 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "2.7.1",
+    "group": "2 - Despesas de Capital",
+    "subgroup": "2.7 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "2.7.1.1",
+    "group": "2 - Despesas de Capital",
+    "subgroup": "2.7 Restos a Pagar",
+    "type": "Analítica",
+    "name": "Restos a Pagar"
   }
 ]

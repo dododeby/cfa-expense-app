@@ -6,17 +6,17 @@
   },
   {
     "id": "1.1",
-    "name": "RECEITA TRIBUTÁRIA",
+    "name": "RECEITAS TRIBUTÁRIAS",
     "type": "Analítica"
   },
   {
     "id": "1.2",
-    "name": "RECEITAS DE CONTRIBUICOES",
+    "name": "RECEITAS DE CONTRIBUIÇÕES",
     "type": "Analítica"
   },
   {
     "id": "1.3",
-    "name": "RECEITA PATRIMONIAL",
+    "name": "RECEITAS PATRIMONIAIS",
     "type": "Analítica"
   },
   {
@@ -26,12 +26,12 @@
   },
   {
     "id": "1.5",
-    "name": "RECEITA DE SERVICOS",
+    "name": "RECEITAS DE SERVIÇOS",
     "type": "Analítica"
   },
   {
     "id": "1.6",
-    "name": "FINANCEIRAS",
+    "name": "RECEITAS FINANCEIRAS",
     "type": "Sintética"
   },
   {
@@ -46,7 +46,7 @@
   },
   {
     "id": "1.7",
-    "name": "TRANSFERENCIAS CORRENTES",
+    "name": "TRANSFERÊNCIAS CORRENTES",
     "type": "Analítica"
   },
   {
