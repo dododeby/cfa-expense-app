@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
 
         try {
             const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `https://cfa-consolida.vercel.app/auth/callback?type=recovery`
+                redirectTo: `${window.location.origin}/reset-password`
             })
 
             if (resetError) {
