@@ -119,8 +119,19 @@ export function ExpenseGrid() {
     }, [data])
 
     const handleValueChange = (accountId: string, field: 'total' | 'finalistica', numValue: number) => {
-        // Cota Parte Logic (ID: 1.10.3.5)
-        if (accountId === '1.10.3.5' && field === 'total') {
+        // Jetons Logic (ID: 1.5.1.1) - 100% Finalística
+        if (accountId === '1.5.1.1' && field === 'total') {
+            setData(prev => ({
+                ...prev,
+                [accountId]: {
+                    ...prev[accountId],
+                    total: numValue,
+                    finalistica: numValue
+                }
+            }))
+        }
+        // Cota Parte Logic (ID: 1.11.3.5) - 100% Finalística
+        else if (accountId === '1.11.3.5' && field === 'total') {
             setData(prev => ({
                 ...prev,
                 [accountId]: {
@@ -276,8 +287,8 @@ export function ExpenseGrid() {
                                                 <FormattedNumberInput
                                                     value={data[account.id]?.finalistica || 0}
                                                     onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
-                                                    disabled={account.id === '1.10.3.5'}
-                                                    className={account.id === '1.10.3.5' ? "bg-slate-100 text-slate-500 cursor-not-allowed" : ""}
+                                                    disabled={account.id === '1.5.1.1' || account.id === '1.11.3.5'}
+                                                    className={(account.id === '1.5.1.1' || account.id === '1.11.3.5') ? "bg-slate-100 text-slate-500 cursor-not-allowed" : ""}
                                                 />
                                             </TableCell>
                                             <TableCell className="text-right font-medium text-slate-700">
