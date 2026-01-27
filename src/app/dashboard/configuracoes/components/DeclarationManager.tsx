@@ -298,8 +298,8 @@ export default function DeclarationManager() {
 
             {/* Receipt Modal/Overlay */}
             {showReceipt && declaration && (
-                <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-                    <div className="bg-white w-full max-w-4xl min-h-[90vh] rounded-lg shadow-2xl flex flex-col relative">
+                <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                    <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col relative overflow-hidden">
                         <Button
                             className="absolute top-4 right-4 z-50 print:hidden"
                             variant="destructive"
