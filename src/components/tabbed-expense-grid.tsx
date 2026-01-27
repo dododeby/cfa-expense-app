@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 // ... (Top of file imports)
-import { Download, Upload, AlertCircle, RotateCcw, Info, Pencil, Save, X } from "lucide-react"
-import { Textarea } from "@/components/ui/textarea"
+import { Download, Upload, AlertCircle, RotateCcw } from "lucide-react"
+
 import { supabase } from "@/lib/supabase"
 import { accountDescriptions as staticDescriptions } from "@/lib/account-descriptions"
 import { loadExpenseData, saveExpenseEntry } from "@/lib/expense-data"
@@ -701,7 +701,7 @@ export function TabbedExpenseGrid() {
 
                                             const hasValidationError = hasError(account.id)
                                             const effectiveIsSynthetic = isSynthetic || isPseudoSynthetic
-                                            const description = customDescriptions[account.id] || staticDescriptions[account.id]
+                                            // const description = customDescriptions[account.id] || staticDescriptions[account.id]
 
                                             return (
                                                 <TableRow key={account.id} className={cn(effectiveIsSynthetic && "bg-slate-50 font-semibold")}>
@@ -756,55 +756,7 @@ export function TabbedExpenseGrid() {
                                                                 />
                                                             </TableCell>
                                                             <TableCell className="text-right font-medium text-slate-700">
-                                                                <div className="flex items-center justify-between">
-                                                                    {/* Tooltip Icon at start of column */}
-                                                                    {description ? (
-                                                                        <Popover>
-                                                                            <PopoverTrigger asChild>
-                                                                                <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 p-0 rounded-full hover:bg-slate-200 text-slate-400 hover:text-blue-600 -ml-2">
-                                                                                    <Info className="h-4 w-4" />
-                                                                                </Button>
-                                                                            </PopoverTrigger>
-                                                                            <PopoverContent className="w-80 p-3 bg-white shadow-lg border-slate-200" align="start">
-                                                                                {editingId === account.id ? (
-                                                                                    <div className="space-y-2">
-                                                                                        <h4 className="font-medium text-sm text-slate-900">Editar Descrição</h4>
-                                                                                        <Textarea
-                                                                                            value={editValue}
-                                                                                            onChange={(e) => setEditValue(e.target.value)}
-                                                                                            className="min-h-[100px] text-xs"
-                                                                                        />
-                                                                                        <div className="flex gap-2 justify-end">
-                                                                                            <Button size="sm" variant="outline" onClick={() => setEditingId(null)} className="h-7 text-xs"><X className="h-3 w-3 mr-1" /> Cancelar</Button>
-                                                                                            <Button size="sm" onClick={() => handleSaveDescription(account.id)} className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white"><Save className="h-3 w-3 mr-1" /> Salvar</Button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                ) : (
-                                                                                    <div className="space-y-1 group/popover relative">
-                                                                                        <div className="flex justify-between items-start">
-                                                                                            <h4 className="font-medium text-sm text-slate-900 flex items-center gap-2">
-                                                                                                <Info className="h-4 w-4 text-blue-600" />
-                                                                                                Atividade Finalística
-                                                                                            </h4>
-                                                                                            <Button
-                                                                                                variant="ghost"
-                                                                                                size="icon"
-                                                                                                className="h-5 w-5 opacity-0 group-hover/popover:opacity-100 transition-opacity"
-                                                                                                onClick={() => startEditing(account.id, description)}
-                                                                                            >
-                                                                                                <Pencil className="h-3 w-3 text-slate-400 hover:text-blue-600" />
-                                                                                            </Button>
-                                                                                        </div>
-                                                                                        <p className="text-xs text-slate-500 italic mb-2">{account.name}</p>
-                                                                                        <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">{description}</p>
-                                                                                    </div>
-                                                                                )}
-                                                                            </PopoverContent>
-                                                                        </Popover>
-                                                                    ) : <div className="w-4" />}
-
-                                                                    <span>{rowValues.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                                                                </div>
+                                                                {rowValues.apoio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                             </TableCell>
                                                             <TableCell className="text-right text-slate-500 bg-slate-100/50 opacity-80">
                                                                 {rowValues.pctFinalistica.toFixed(1)}%
