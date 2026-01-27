@@ -497,674 +497,681 @@
     "name": "Indenização de Deslocamento e Alimentação para Colaborador Eventual"
   },
   {
-    "id": "1.4.2",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.4 Diárias",
-    "type": "Sintética",
-    "name": "Jetons à Conselheiros"
-  },
-  {
-    "id": "1.4.2.1",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.4 Diárias",
-    "type": "Analítica",
-    "name": "Jetons à Conselheiros"
-  },
-  {
     "id": "1.5",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.5 Passagens Aéreas, Marítimas e Terrestres",
+    "subgroup": "1.5 Jetons à Conselheiros",
     "type": "Sintética",
-    "name": "Passagens Aéreas, Marítimas e Terrestres"
+    "name": "Jetons à Conselheiros"
   },
   {
     "id": "1.5.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.5 Passagens Aéreas, Marítimas e Terrestres",
+    "subgroup": "1.5 Jetons à Conselheiros",
     "type": "Sintética",
-    "name": "Passagens Aéreas, Marítimas e Terrestres"
+    "name": "Jetons à Conselheiros"
   },
   {
     "id": "1.5.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.5 Passagens Aéreas, Marítimas e Terrestres",
+    "subgroup": "1.5 Jetons à Conselheiros",
     "type": "Analítica",
-    "name": "Passagens Aéreas, Marítimas e Terrestres no país"
-  },
-  {
-    "id": "1.5.1.2",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.5 Passagens Aéreas, Marítimas e Terrestres",
-    "type": "Analítica",
-    "name": "Passagens Aéreas, Marítimas e Terrestres no exterior"
+    "name": "Jetons à Conselheiros"
   },
   {
     "id": "1.6",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
+    "subgroup": "1.6 Passagens Aéreas, Marítimas e Terrestres",
     "type": "Sintética",
-    "name": "Servicos Terceiros - Pessoas Jurídicas"
+    "name": "Passagens Aéreas, Marítimas e Terrestres"
   },
   {
     "id": "1.6.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
+    "subgroup": "1.6 Passagens Aéreas, Marítimas e Terrestres",
     "type": "Sintética",
-    "name": "Servicos Terceiros - Pessoas Jurídicas"
+    "name": "Passagens Aéreas, Marítimas e Terrestres"
   },
   {
     "id": "1.6.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
+    "subgroup": "1.6 Passagens Aéreas, Marítimas e Terrestres",
     "type": "Analítica",
-    "name": "Serviço de Assessoria Administrativa"
+    "name": "Passagens Aéreas, Marítimas e Terrestres no país"
   },
   {
     "id": "1.6.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
+    "subgroup": "1.6 Passagens Aéreas, Marítimas e Terrestres",
     "type": "Analítica",
-    "name": "Serviço de Assessoria de Imprensa"
-  },
-  {
-    "id": "1.6.1.3",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Anotações de Inadimplentes"
-  },
-  {
-    "id": "1.6.1.4",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Assessoria em Informática ( Cin)"
-  },
-  {
-    "id": "1.6.1.5",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Informática (cin)"
-  },
-  {
-    "id": "1.6.1.6",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Copa e Cozinha"
-  },
-  {
-    "id": "1.6.1.7",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços Gráficos"
-  },
-  {
-    "id": "1.6.1.8",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Medicina do Trabalho"
-  },
-  {
-    "id": "1.6.1.9",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Seleção, Treinamento e Orientação Profisssional"
-  },
-  {
-    "id": "1.6.1.10",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Emissão de Carteira de Identidade Profissional - CIP"
-  },
-  {
-    "id": "1.6.1.11",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Cobrança Administrativa de Dívida"
-  },
-  {
-    "id": "1.6.1.12",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Intermediação de Estagios/ Menor Aprendiz"
-  },
-  {
-    "id": "1.6.1.13",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviço de Publicidade/Divulgação Institucional"
-  },
-  {
-    "id": "1.6.1.14",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços Técnicos Especializados"
-  },
-  {
-    "id": "1.6.1.15",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Seguros em Geral"
-  },
-  {
-    "id": "1.6.1.16",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Mão de Obra Terceirizada (limpeza, Portaria, Vigilancia, Motorista...)"
-  },
-  {
-    "id": "1.6.1.17",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Assessoria Contábil"
-  },
-  {
-    "id": "1.6.1.18",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Assessoria Jurídica"
-  },
-  {
-    "id": "1.6.1.19",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Tradução"
-  },
-  {
-    "id": "1.6.1.20",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços Fotográficos e Vídeos"
-  },
-  {
-    "id": "1.6.1.21",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Produção Jornalisticas"
-  },
-  {
-    "id": "1.6.1.22",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Fretes, Transportes e Encomendas"
-  },
-  {
-    "id": "1.6.1.23",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Exposições, Congressos, Conferências e Afins"
-  },
-  {
-    "id": "1.6.1.24",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Cópias e Microfilmagens de Documentos"
-  },
-  {
-    "id": "1.6.1.25",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Condomínios"
-  },
-  {
-    "id": "1.6.1.26",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Locações de Bens Imóveis"
-  },
-  {
-    "id": "1.6.1.27",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Hospedagem PJ"
-  },
-  {
-    "id": "1.6.1.28",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Locação de Bens Móveis, Máquinas e Equipamentos"
-  },
-  {
-    "id": "1.6.1.29",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Locação de Veículos"
-  },
-  {
-    "id": "1.6.1.30",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Manutenção e Conservação de Bens Móveis"
-  },
-  {
-    "id": "1.6.1.31",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Manutenção e Conservação de Veículos"
-  },
-  {
-    "id": "1.6.1.32",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Energia Elétrica"
-  },
-  {
-    "id": "1.6.1.33",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Água e Esgoto"
-  },
-  {
-    "id": "1.6.1.34",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços Postais"
-  },
-  {
-    "id": "1.6.1.35",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Telecomunicações"
-  },
-  {
-    "id": "1.6.1.36",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Manutenção de Software e Hardware"
-  },
-  {
-    "id": "1.6.1.37",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Assinaturas"
-  },
-  {
-    "id": "1.6.1.38",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Publicações de Editais Anúncios e Matérias"
-  },
-  {
-    "id": "1.6.1.39",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Revistas e Assemelhados"
-  },
-  {
-    "id": "1.6.1.40",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Certificação Digital"
-  },
-  {
-    "id": "1.6.1.41",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Suporte aos Sites Cfa"
-  },
-  {
-    "id": "1.6.1.42",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Manutenção de Sistemas"
-  },
-  {
-    "id": "1.6.1.43",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Licenças de Software"
-  },
-  {
-    "id": "1.6.1.44",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Tecnologia da Informação - Assinatura de Soluções"
-  },
-  {
-    "id": "1.6.1.45",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Assessoria Parlamentar"
-  },
-  {
-    "id": "1.6.1.46",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Custeio Na Realização e Apoio a Reuniões"
-  },
-  {
-    "id": "1.6.1.47",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Auditoria Externa/ ISO"
-  },
-  {
-    "id": "1.6.1.48",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Realização do Jubileu"
-  },
-  {
-    "id": "1.6.1.49",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Atividades Artísticas, Culturais, Desportivas, Turísticas e Recreativas"
-  },
-  {
-    "id": "1.6.1.50",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Tarifas Administrativas de Cartões de Débito e Crédito"
-  },
-  {
-    "id": "1.6.1.51",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Serviços de Banco de Dados ( Serpro)"
-  },
-  {
-    "id": "1.6.1.52",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.6 Servicos Terceiros - Pessoas Jurídicas",
-    "type": "Analítica",
-    "name": "Outros Serviços de Terceiros"
+    "name": "Passagens Aéreas, Marítimas e Terrestres no exterior"
   },
   {
     "id": "1.7",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.7 Despesas com Locomoção",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
     "type": "Sintética",
-    "name": "Despesas com Locomoção"
+    "name": "Servicos Terceiros - Pessoas Jurídicas"
   },
   {
     "id": "1.7.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.7 Despesas com Locomoção",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
     "type": "Sintética",
-    "name": "Despesas com Locomoção"
+    "name": "Servicos Terceiros - Pessoas Jurídicas"
   },
   {
     "id": "1.7.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.7 Despesas com Locomoção",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
     "type": "Analítica",
-    "name": "Pedágios"
+    "name": "Serviço de Assessoria Administrativa"
   },
   {
     "id": "1.7.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.7 Despesas com Locomoção",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
     "type": "Analítica",
-    "name": "Estacionamentos"
+    "name": "Serviço de Assessoria de Imprensa"
   },
   {
     "id": "1.7.1.3",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.7 Despesas com Locomoção",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
     "type": "Analítica",
-    "name": "Despesas com Taxi"
+    "name": "Serviços de Anotações de Inadimplentes"
+  },
+  {
+    "id": "1.7.1.4",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Assessoria em Informática ( Cin)"
+  },
+  {
+    "id": "1.7.1.5",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Informática (cin)"
+  },
+  {
+    "id": "1.7.1.6",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Copa e Cozinha"
+  },
+  {
+    "id": "1.7.1.7",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços Gráficos"
+  },
+  {
+    "id": "1.7.1.8",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Medicina do Trabalho"
+  },
+  {
+    "id": "1.7.1.9",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Seleção, Treinamento e Orientação Profisssional"
+  },
+  {
+    "id": "1.7.1.10",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Emissão de Carteira de Identidade Profissional - CIP"
+  },
+  {
+    "id": "1.7.1.11",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Cobrança Administrativa de Dívida"
+  },
+  {
+    "id": "1.7.1.12",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Intermediação de Estagios/ Menor Aprendiz"
+  },
+  {
+    "id": "1.7.1.13",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviço de Publicidade/Divulgação Institucional"
+  },
+  {
+    "id": "1.7.1.14",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços Técnicos Especializados"
+  },
+  {
+    "id": "1.7.1.15",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Seguros em Geral"
+  },
+  {
+    "id": "1.7.1.16",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Mão de Obra Terceirizada (limpeza, Portaria, Vigilancia, Motorista...)"
+  },
+  {
+    "id": "1.7.1.17",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Assessoria Contábil"
+  },
+  {
+    "id": "1.7.1.18",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Assessoria Jurídica"
+  },
+  {
+    "id": "1.7.1.19",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Tradução"
+  },
+  {
+    "id": "1.7.1.20",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços Fotográficos e Vídeos"
+  },
+  {
+    "id": "1.7.1.21",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Produção Jornalisticas"
+  },
+  {
+    "id": "1.7.1.22",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Fretes, Transportes e Encomendas"
+  },
+  {
+    "id": "1.7.1.23",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Exposições, Congressos, Conferências e Afins"
+  },
+  {
+    "id": "1.7.1.24",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Cópias e Microfilmagens de Documentos"
+  },
+  {
+    "id": "1.7.1.25",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Condomínios"
+  },
+  {
+    "id": "1.7.1.26",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Locações de Bens Imóveis"
+  },
+  {
+    "id": "1.7.1.27",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Hospedagem PJ"
+  },
+  {
+    "id": "1.7.1.28",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Locação de Bens Móveis, Máquinas e Equipamentos"
+  },
+  {
+    "id": "1.7.1.29",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Locação de Veículos"
+  },
+  {
+    "id": "1.7.1.30",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Manutenção e Conservação de Bens Móveis"
+  },
+  {
+    "id": "1.7.1.31",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Manutenção e Conservação de Veículos"
+  },
+  {
+    "id": "1.7.1.32",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Energia Elétrica"
+  },
+  {
+    "id": "1.7.1.33",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Água e Esgoto"
+  },
+  {
+    "id": "1.7.1.34",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços Postais"
+  },
+  {
+    "id": "1.7.1.35",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Telecomunicações"
+  },
+  {
+    "id": "1.7.1.36",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Manutenção de Software e Hardware"
+  },
+  {
+    "id": "1.7.1.37",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Assinaturas"
+  },
+  {
+    "id": "1.7.1.38",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Publicações de Editais Anúncios e Matérias"
+  },
+  {
+    "id": "1.7.1.39",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Revistas e Assemelhados"
+  },
+  {
+    "id": "1.7.1.40",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Certificação Digital"
+  },
+  {
+    "id": "1.7.1.41",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Suporte aos Sites Cfa"
+  },
+  {
+    "id": "1.7.1.42",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Manutenção de Sistemas"
+  },
+  {
+    "id": "1.7.1.43",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Licenças de Software"
+  },
+  {
+    "id": "1.7.1.44",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Tecnologia da Informação - Assinatura de Soluções"
+  },
+  {
+    "id": "1.7.1.45",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Assessoria Parlamentar"
+  },
+  {
+    "id": "1.7.1.46",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Custeio Na Realização e Apoio a Reuniões"
+  },
+  {
+    "id": "1.7.1.47",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Auditoria Externa/ ISO"
+  },
+  {
+    "id": "1.7.1.48",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Realização do Jubileu"
+  },
+  {
+    "id": "1.7.1.49",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Atividades Artísticas, Culturais, Desportivas, Turísticas e Recreativas"
+  },
+  {
+    "id": "1.7.1.50",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Tarifas Administrativas de Cartões de Débito e Crédito"
+  },
+  {
+    "id": "1.7.1.51",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Serviços de Banco de Dados ( Serpro)"
+  },
+  {
+    "id": "1.7.1.52",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.7 Servicos Terceiros - Pessoas Jurídicas",
+    "type": "Analítica",
+    "name": "Outros Serviços de Terceiros"
   },
   {
     "id": "1.8",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.8 Tributárias e Contributivas",
+    "subgroup": "1.8 Despesas com Locomoção",
     "type": "Sintética",
-    "name": "Tributárias e Contributivas"
+    "name": "Despesas com Locomoção"
   },
   {
     "id": "1.8.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.8 Tributárias e Contributivas",
+    "subgroup": "1.8 Despesas com Locomoção",
     "type": "Sintética",
-    "name": "Tributos"
+    "name": "Despesas com Locomoção"
   },
   {
     "id": "1.8.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.8 Tributárias e Contributivas",
+    "subgroup": "1.8 Despesas com Locomoção",
     "type": "Analítica",
-    "name": "Taxas Diversas"
+    "name": "Pedágios"
   },
   {
     "id": "1.8.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.8 Tributárias e Contributivas",
+    "subgroup": "1.8 Despesas com Locomoção",
     "type": "Analítica",
-    "name": "Outros Tributos"
+    "name": "Estacionamentos"
+  },
+  {
+    "id": "1.8.1.3",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.8 Despesas com Locomoção",
+    "type": "Analítica",
+    "name": "Despesas com Taxi"
   },
   {
     "id": "1.9",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
+    "subgroup": "1.9 Tributárias e Contributivas",
     "type": "Sintética",
-    "name": "Demais Despesas Correntes"
+    "name": "Tributárias e Contributivas"
   },
   {
     "id": "1.9.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
+    "subgroup": "1.9 Tributárias e Contributivas",
     "type": "Sintética",
-    "name": "Demais Despesas Correntes"
+    "name": "Tributos"
   },
   {
     "id": "1.9.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
+    "subgroup": "1.9 Tributárias e Contributivas",
     "type": "Analítica",
-    "name": "Despesas de Exercícios Anteriores"
+    "name": "Taxas Diversas"
   },
   {
     "id": "1.9.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
+    "subgroup": "1.9 Tributárias e Contributivas",
     "type": "Analítica",
-    "name": "Despesas Miúdas de Pronto Pagamento"
-  },
-  {
-    "id": "1.9.1.3",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Custas Processuais"
-  },
-  {
-    "id": "1.9.1.4",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Sentenças Judiciais"
-  },
-  {
-    "id": "1.9.1.5",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Honorários Cobrança/Sucumbência"
-  },
-  {
-    "id": "1.9.1.6",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Cartórios, Registros, Firmas e Autenticações"
-  },
-  {
-    "id": "1.9.1.7",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Indenizações, Restituições e Reembolsos"
-  },
-  {
-    "id": "1.9.1.8",
-    "group": "1 - Despesas Correntes",
-    "subgroup": "1.9 Demais Despesas Correntes",
-    "type": "Analítica",
-    "name": "Reembolso de Quilometragem Por Km Rodado"
+    "name": "Outros Tributos"
   },
   {
     "id": "1.10",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Sintética",
-    "name": "Financeiras"
+    "name": "Demais Despesas Correntes"
   },
   {
     "id": "1.10.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Sintética",
-    "name": "Juros e Encargos sobre Empréstimos"
+    "name": "Demais Despesas Correntes"
   },
   {
     "id": "1.10.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Analítica",
-    "name": "Juros sobre Empréstimos"
+    "name": "Despesas de Exercícios Anteriores"
   },
   {
     "id": "1.10.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Analítica",
-    "name": "Atualização Monetária sobre Empréstimos"
+    "name": "Despesas Miúdas de Pronto Pagamento"
   },
   {
-    "id": "1.10.2",
+    "id": "1.10.1.3",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
-    "type": "Sintética",
-    "name": "Serviços Bancários"
+    "subgroup": "1.10 Demais Despesas Correntes",
+    "type": "Analítica",
+    "name": "Custas Processuais"
   },
   {
-    "id": "1.10.2.1",
+    "id": "1.10.1.4",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Analítica",
-    "name": "Taxas sobre Serviços Bancários"
+    "name": "Sentenças Judiciais"
   },
   {
-    "id": "1.10.2.2",
+    "id": "1.10.1.5",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.10 Financeiras",
+    "subgroup": "1.10 Demais Despesas Correntes",
     "type": "Analítica",
-    "name": "Despesas com Cobrança"
+    "name": "Honorários Cobrança/Sucumbência"
+  },
+  {
+    "id": "1.10.1.6",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.10 Demais Despesas Correntes",
+    "type": "Analítica",
+    "name": "Cartórios, Registros, Firmas e Autenticações"
+  },
+  {
+    "id": "1.10.1.7",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.10 Demais Despesas Correntes",
+    "type": "Analítica",
+    "name": "Indenizações, Restituições e Reembolsos"
+  },
+  {
+    "id": "1.10.1.8",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.10 Demais Despesas Correntes",
+    "type": "Analítica",
+    "name": "Reembolso de Quilometragem Por Km Rodado"
   },
   {
     "id": "1.11",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Sintética",
-    "name": "Transferências Correntes"
+    "name": "Financeiras"
   },
   {
     "id": "1.11.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Sintética",
-    "name": "Transferências Correntes"
+    "name": "Juros e Encargos sobre Empréstimos"
   },
   {
     "id": "1.11.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Analítica",
-    "name": "Apoio Financeiro para Eventos Externo ao Cfa"
+    "name": "Juros sobre Empréstimos"
   },
   {
     "id": "1.11.1.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Analítica",
-    "name": "Repasse de Recursos Proder - Projetos Individuais do Sistema Cfa/Cras"
+    "name": "Atualização Monetária sobre Empréstimos"
   },
   {
-    "id": "1.11.1.3",
+    "id": "1.11.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
-    "type": "Analítica",
-    "name": "Repasse de Recursos Proder - Projetos Coletivos do Sistema Cfa/Cras"
+    "subgroup": "1.11 Financeiras",
+    "type": "Sintética",
+    "name": "Serviços Bancários"
   },
   {
-    "id": "1.11.1.4",
+    "id": "1.11.2.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Analítica",
-    "name": "Crédito Disponível Despesa de Capital"
+    "name": "Taxas sobre Serviços Bancários"
   },
   {
-    "id": "1.11.1.5",
+    "id": "1.11.2.2",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.11 Transferências Correntes",
+    "subgroup": "1.11 Financeiras",
     "type": "Analítica",
-    "name": "Cota Parte ao CFA"
+    "name": "Despesas com Cobrança"
   },
   {
     "id": "1.12",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.12 Restos a Pagar",
+    "subgroup": "1.12 Transferências Correntes",
     "type": "Sintética",
-    "name": "Restos a Pagar"
+    "name": "Transferências Correntes"
   },
   {
     "id": "1.12.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.12 Restos a Pagar",
+    "subgroup": "1.12 Transferências Correntes",
     "type": "Sintética",
-    "name": "Restos a Pagar"
+    "name": "Transferências Correntes"
   },
   {
     "id": "1.12.1.1",
     "group": "1 - Despesas Correntes",
-    "subgroup": "1.12 Restos a Pagar",
+    "subgroup": "1.12 Transferências Correntes",
+    "type": "Analítica",
+    "name": "Apoio Financeiro para Eventos Externo ao Cfa"
+  },
+  {
+    "id": "1.12.1.2",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Transferências Correntes",
+    "type": "Analítica",
+    "name": "Repasse de Recursos Proder - Projetos Individuais do Sistema Cfa/Cras"
+  },
+  {
+    "id": "1.12.1.3",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Transferências Correntes",
+    "type": "Analítica",
+    "name": "Repasse de Recursos Proder - Projetos Coletivos do Sistema Cfa/Cras"
+  },
+  {
+    "id": "1.12.1.4",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Transferências Correntes",
+    "type": "Analítica",
+    "name": "Crédito Disponível Despesa de Capital"
+  },
+  {
+    "id": "1.12.1.5",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.12 Transferências Correntes",
+    "type": "Analítica",
+    "name": "Cota Parte ao CFA"
+  },
+  {
+    "id": "1.13",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.13 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "1.13.1",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.13 Restos a Pagar",
+    "type": "Sintética",
+    "name": "Restos a Pagar"
+  },
+  {
+    "id": "1.13.1.1",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.13 Restos a Pagar",
     "type": "Analítica",
     "name": "Restos a Pagar"
   },
