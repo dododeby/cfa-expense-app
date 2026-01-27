@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,31 @@ export default function LoginPage() {
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+
+    // Detect errors from hash (Supabase redirects)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const hash = window.location.hash
+            if (hash) {
+                const params = new URLSearchParams(hash.substring(1))
+                const errorParam = params.get('error')
+                const errorCode = params.get('error_code')
+                const errorDescription = params.get('error_description')
+
+                if (errorParam || errorCode) {
+                    if (errorCode === 'otp_expired') {
+                        setError('O link de recuperação expirou. Por favor, solicite um novo link.')
+                    } else if (errorDescription) {
+                        setError(decodeURIComponent(errorDescription.replace(/\+/g, ' ')))
+                    } else {
+                        setError('Erro na autenticação. Tente novamente.')
+                    }
+                    // Clean the hash from URL
+                    window.history.replaceState(null, '', window.location.pathname)
+                }
+            }
+        }
+    }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
