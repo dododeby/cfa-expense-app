@@ -497,6 +497,20 @@
     "name": "Indenização de Deslocamento e Alimentação para Colaborador Eventual"
   },
   {
+    "id": "1.4.2",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.4 Diárias",
+    "type": "Sintética",
+    "name": "Jetons à Conselheiros"
+  },
+  {
+    "id": "1.4.2.1",
+    "group": "1 - Despesas Correntes",
+    "subgroup": "1.4 Diárias",
+    "type": "Analítica",
+    "name": "Jetons à Conselheiros"
+  },
+  {
     "id": "1.5",
     "group": "1 - Despesas Correntes",
     "subgroup": "1.5 Passagens Aéreas, Marítimas e Terrestres",
