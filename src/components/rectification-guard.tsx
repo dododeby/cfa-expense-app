@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { loadDeclaration, Declaration } from "@/lib/declarations"
+import { loadDeclaration, markDeclarationAsDraft, Declaration } from "@/lib/declarations"
 import { Button } from "@/components/ui/button"
 import { AlertTriangle, Lock, Unlock } from "lucide-react"
 import {
@@ -38,11 +38,10 @@ export default function RectificationGuard({ children }: { children: React.React
             // Actually, if past deadline, it is locked forever.
             // If before deadline and delivered and not rectifying, it is locked with option to unlock.
 
-            if (dec && !savedRectifying) {
+            // Locked if: Declaration exists with status='submitted' AND Not explicitly unlocked
+            if (dec && dec.status === 'submitted' && !savedRectifying) {
                 setIsLocked(true)
-                setShowConfirm(true) // Immediately show the prompt if they try to access? 
-                // Or just show a "Locked" overlay with a button to trigger the prompt?
-                // User said: "aparecerá uma janela perguntando...". An overlay is cleaner.
+                setShowConfirm(true)
             }
 
             setLoading(false)
@@ -50,11 +49,24 @@ export default function RectificationGuard({ children }: { children: React.React
         checkStatus()
     }, [])
 
-    const handleUnlock = () => {
-        // Unlock for this session
-        sessionStorage.setItem('isRectifying', 'true')
-        setIsLocked(false)
-        setShowConfirm(false)
+    const handleUnlock = async () => {
+        // Mark as draft in database
+        const success = await markDeclarationAsDraft()
+
+        if (success) {
+            // Unlock for this session
+            sessionStorage.setItem('isRectifying', 'true')
+            setIsLocked(false)
+            setShowConfirm(false)
+
+            // Update local state
+            if (declaration) {
+                setDeclaration({ ...declaration, status: 'draft' })
+            }
+
+            // Reload page to refresh all components
+            window.location.reload()
+        }
     }
 
     if (loading) return <div>Carregando...</div>

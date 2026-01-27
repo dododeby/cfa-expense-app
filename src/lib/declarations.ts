@@ -19,6 +19,7 @@ export interface Declaration {
     responsible_data_role?: string
     responsible_data_doc_type?: string
     responsible_data_doc_number?: string
+    status?: 'submitted' | 'draft'
 }
 
 export async function loadDeclaration(): Promise<Declaration | null> {
@@ -102,6 +103,7 @@ export async function submitDeclaration(
             responsible_data_doc_type: responsible.dataDocType,
             responsible_data_doc_number: responsible.dataDocNumber,
 
+            status: 'submitted',
             delivery_date: new Date().toISOString()
         })
         .select()
@@ -112,5 +114,31 @@ export async function submitDeclaration(
         throw error
     }
 
+    // Clear rectifying flag on successful submit
+    sessionStorage.removeItem('isRectifying')
+
     return data
+}
+
+/**
+ * Mark the latest declaration as draft (pending rectification)
+ */
+export async function markDeclarationAsDraft(): Promise<boolean> {
+    const orgId = sessionStorage.getItem('orgId')
+    if (!orgId) return false
+
+    const latest = await loadDeclaration()
+    if (!latest) return false
+
+    const { error } = await supabase
+        .from('declarations')
+        .update({ status: 'draft' })
+        .eq('id', latest.id)
+
+    if (error) {
+        console.error('Error marking as draft:', error)
+        return false
+    }
+
+    return true
 }

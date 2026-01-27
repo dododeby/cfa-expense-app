@@ -294,13 +294,22 @@ function DashboardContent({
                             const currentDate = new Date()
                             const isPastDeadline = currentDate > deliveryDeadline
 
-                            if (declaration) {
+                            if (declaration && declaration.status === 'submitted') {
                                 return (
                                     <>
                                         <div className="text-2xl font-bold text-blue-600">Entregue</div>
                                         <p className="text-xs text-blue-600">
                                             Em {new Date(declaration.delivery_date).toLocaleDateString('pt-BR')}
                                             {declaration.is_rectification && ' (Retificada)'}
+                                        </p>
+                                    </>
+                                )
+                            } else if (declaration && declaration.status === 'draft') {
+                                return (
+                                    <>
+                                        <div className="text-2xl font-bold text-amber-600">Pendente</div>
+                                        <p className="text-xs text-amber-600">
+                                            Em retificação - Novo envio necessário
                                         </p>
                                     </>
                                 )

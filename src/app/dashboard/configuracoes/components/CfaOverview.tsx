@@ -46,7 +46,7 @@ export default function CfaOverview() {
                     // Find latest declaration for this org
                     const latestDec = declarations?.find(d => d.organization_id === org.id)
 
-                    if (latestDec) {
+                    if (latestDec && latestDec.status === 'submitted') {
                         return {
                             orgId: org.id,
                             orgName: org.name,
