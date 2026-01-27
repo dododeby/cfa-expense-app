@@ -257,11 +257,13 @@ export function TabbedExpenseGrid() {
     const handleValueChange = (accountId: string, field: 'total' | 'finalistica', value: number) => {
         const numValue = value
 
-        // Special logic for "Cota Parte ao CFA" (1.10.3.5)
+        // Auto-fill logic for 100% Finalística accounts
+        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.11.3.5'] // Jetons, CIP, Cota Parte
+
         let newTotal = field === 'total' ? numValue : (data[accountId]?.total || 0)
         let newFinalistica = field === 'finalistica' ? numValue : (data[accountId]?.finalistica || 0)
 
-        if (accountId === '1.10.3.5' && field === 'total') {
+        if (autoFillAccounts.includes(accountId) && field === 'total') {
             newFinalistica = numValue
         }
 
@@ -283,14 +285,14 @@ export function TabbedExpenseGrid() {
         const newValue = field === 'total' ? rowData.total : rowData.finalistica
         const previousValue = activeValueRef.current
 
+        // Auto-fill accounts
+        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.11.3.5']
+
         // Only save if value changed
-        // For Cota Parte (1.10.3.5), if we changed total, finalistica also changed.
-        // The saveExpenseEntry saves BOTH fields, so one save call is enough.
-        if (newValue !== previousValue || (accountId === '1.10.3.5' && field === 'total')) {
+        if (newValue !== previousValue || (autoFillAccounts.includes(accountId) && field === 'total')) {
             setSaving(true)
 
             // Audit
-            // For Cota Parte, ideally we should audit both, but for now we audit the field user interacted with.
             addAuditEntry({
                 accountId,
                 accountName: account.name,
@@ -746,10 +748,10 @@ export function TabbedExpenseGrid() {
                                                                     onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
                                                                     onFocus={() => handleInputFocus(data[account.id]?.finalistica || 0)}
                                                                     onBlur={() => handleInputBlur(account.id, 'finalistica')}
-                                                                    disabled={account.id === '1.10.3.5' || isPastDeadline}
+                                                                    disabled={['1.5.1.1', '1.7.1.10', '1.11.3.5'].includes(account.id) || isPastDeadline}
                                                                     className={cn(
                                                                         hasValidationError && "border-red-500 bg-red-50",
-                                                                        (account.id === '1.10.3.5' || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
+                                                                        (['1.5.1.1', '1.7.1.10', '1.11.3.5'].includes(account.id) || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
                                                                     )}
                                                                 />
                                                             </TableCell>
