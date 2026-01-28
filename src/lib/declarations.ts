@@ -41,6 +41,24 @@ export async function loadDeclaration(): Promise<Declaration | null> {
     return data
 }
 
+export async function loadDeclarationHistory(): Promise<Declaration[]> {
+    const orgId = sessionStorage.getItem('orgId')
+    if (!orgId) return []
+
+    const { data, error } = await supabase
+        .from('declarations')
+        .select('*')
+        .eq('organization_id', orgId)
+        .order('delivery_date', { ascending: false })
+
+    if (error) {
+        console.error('Error loading declaration history:', error)
+        return []
+    }
+
+    return data || []
+}
+
 export async function submitDeclaration(
     totals: { revenue: number; expense: number; finalistica: number; apoio: number },
     snapshot: any,

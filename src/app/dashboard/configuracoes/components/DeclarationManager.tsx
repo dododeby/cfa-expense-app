@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { loadDeclaration, submitDeclaration, type Declaration } from "@/lib/declarations"
+import { loadDeclaration, loadDeclarationHistory, submitDeclaration, type Declaration } from "@/lib/declarations"
 import { loadResponsibleData } from "@/lib/responsible-data"
 import { loadRevenueData } from "@/lib/revenue-data"
 import { loadExpenseData } from "@/lib/expense-data"
@@ -31,6 +31,7 @@ export default function DeclarationManager() {
     const [isConfirming, setIsConfirming] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showReceipt, setShowReceipt] = useState(false)
+    const [declarationHistory, setDeclarationHistory] = useState<Declaration[]>([])
     const [validationError, setValidationError] = useState<string | null>(null)
 
     // Deadline: March 31, 2026
@@ -47,6 +48,10 @@ export default function DeclarationManager() {
         try {
             const dec = await loadDeclaration()
             setDeclaration(dec)
+
+            // Load history for receipt
+            const history = await loadDeclarationHistory()
+            setDeclarationHistory(history)
         } catch (e) {
             console.error(e)
         } finally {
@@ -310,7 +315,7 @@ export default function DeclarationManager() {
 
                         <div className="flex-1 p-8 overflow-y-auto print:p-0">
                             {/* Reusing Receipt Logic inline for simplicity */}
-                            <ReceiptView declaration={declaration} />
+                            <ReceiptView declaration={declaration} history={declarationHistory} />
                         </div>
                     </div>
                 </div>
@@ -319,7 +324,7 @@ export default function DeclarationManager() {
     )
 }
 
-function ReceiptView({ declaration }: { declaration: Declaration }) {
+function ReceiptView({ declaration, history = [] }: { declaration: Declaration; history?: Declaration[] }) {
     const isCFA = sessionStorage.getItem('orgType') === 'CFA'
 
     return (
@@ -396,6 +401,39 @@ function ReceiptView({ declaration }: { declaration: Declaration }) {
                         referentes ao exercício de <strong>2025</strong>.
                     </p>
                 </div>
+
+                {/* Delivery History Section */}
+                {history.length > 0 && (
+                    <div className="mt-8 border-t-2 border-slate-300 pt-6">
+                        <h3 className="font-bold text-base text-slate-800 mb-4 uppercase text-center">Histórico de Entregas</h3>
+                        <div className="space-y-2">
+                            {history.map((item, index) => (
+                                <div key={item.id} className="flex items-center justify-between p-3 bg-slate-100 rounded border border-slate-200 text-xs">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-bold text-slate-600">#{history.length - index}</span>
+                                        <div>
+                                            <p className="font-semibold text-slate-800">
+                                                Recibo nº {item.receipt_number}
+                                                {item.is_rectification && <span className="ml-2 text-amber-600">(Retificação {item.rectification_count})</span>}
+                                            </p>
+                                            <p className="text-slate-600">
+                                                {new Date(item.delivery_date).toLocaleString('pt-BR')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-blue-700 font-medium">
+                                            Receita: {item.total_revenue?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        </p>
+                                        <p className="text-red-700 font-medium">
+                                            Despesa: {item.total_expense?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className="text-center mt-8 text-lg">
                     Brasília, {new Date(declaration.delivery_date).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}.
