@@ -257,14 +257,13 @@ export function TabbedExpenseGrid() {
     const handleValueChange = (accountId: string, field: 'total' | 'finalistica', value: number) => {
         const numValue = value
 
-        // Auto-fill logic for 100% Finalística accounts
-        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.12.1.5'] // Jetons, CIP, Cota Parte
-
+        // Special logic for Cota Parte (100% Apoio)
         let newTotal = field === 'total' ? numValue : (data[accountId]?.total || 0)
         let newFinalistica = field === 'finalistica' ? numValue : (data[accountId]?.finalistica || 0)
 
-        if (autoFillAccounts.includes(accountId) && field === 'total') {
-            newFinalistica = numValue
+        // Cota Parte ao CFA (1.12.1.5) is 100% Apoio - Finalística always 0
+        if (accountId === '1.12.1.5' && field === 'total') {
+            newFinalistica = 0
         }
 
         setData(prev => ({
@@ -285,11 +284,8 @@ export function TabbedExpenseGrid() {
         const newValue = field === 'total' ? rowData.total : rowData.finalistica
         const previousValue = activeValueRef.current
 
-        // Auto-fill accounts
-        const autoFillAccounts = ['1.5.1.1', '1.7.1.10', '1.12.1.5']
-
         // Only save if value changed
-        if (newValue !== previousValue || (autoFillAccounts.includes(accountId) && field === 'total')) {
+        if (newValue !== previousValue) {
             setSaving(true)
 
             // Audit
@@ -748,10 +744,10 @@ export function TabbedExpenseGrid() {
                                                                     onChange={(val) => handleValueChange(account.id, 'finalistica', val)}
                                                                     onFocus={() => handleInputFocus(data[account.id]?.finalistica || 0)}
                                                                     onBlur={() => handleInputBlur(account.id, 'finalistica')}
-                                                                    disabled={['1.5.1.1', '1.7.1.10', '1.12.1.5'].includes(account.id) || isPastDeadline}
+                                                                    disabled={isPastDeadline}
                                                                     className={cn(
                                                                         hasValidationError && "border-red-500 bg-red-50",
-                                                                        (['1.5.1.1', '1.7.1.10', '1.12.1.5'].includes(account.id) || isPastDeadline) && "bg-slate-100 text-slate-500 cursor-not-allowed"
+                                                                        isPastDeadline && "bg-slate-100 text-slate-500 cursor-not-allowed"
                                                                     )}
                                                                 />
                                                             </TableCell>
