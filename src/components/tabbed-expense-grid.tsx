@@ -636,30 +636,40 @@ export function TabbedExpenseGrid() {
                                             let isPseudoSynthetic = false
 
                                             if (account.type === 'Sintética') {
-                                                // Only match parents that have EXACTLY ONE child with the SAME NAME
-                                                const directChildren = accounts.filter(child =>
-                                                    child.id.startsWith(account.id + '.') &&
-                                                    child.id.split('.').length === parts.length + 1
-                                                )
-
-                                                if (directChildren.length === 1 && directChildren[0].name.trim().toLowerCase() === account.name.trim().toLowerCase()) {
-                                                    hideRow = true
-                                                }
-                                            } else if (account.type === 'Analítica') {
-                                                // Standard logic: if I am the only child and match parent name, I might look synthetic IF parent is hidden.
-                                                // If parent is shown (because it had multiple children), I should look analytic.
-                                                if (parts.length > 1) {
-                                                    const parentId = parts.slice(0, -1).join('.')
-                                                    const parent = accounts.find(a => a.id === parentId)
-                                                    const siblings = accounts.filter(a =>
-                                                        a.id.startsWith(parentId + '.') &&
-                                                        a.id.split('.').length === parts.length
+                                                // Exception: Always show Jetons à Conselheiros (1.5.1) synthetic account
+                                                if (account.id === '1.5.1') {
+                                                    // Don't hide, show both synthetic and analytic
+                                                } else {
+                                                    // Only match parents that have EXACTLY ONE child with the SAME NAME
+                                                    const directChildren = accounts.filter(child =>
+                                                        child.id.startsWith(account.id + '.') &&
+                                                        child.id.split('.').length === parts.length + 1
                                                     )
 
-                                                    // If parent matches name AND I am the only child (sibling count 1), 
-                                                    // then parent was hidden above. So I take over visually.
-                                                    if (parent && parent.name.trim().toLowerCase() === account.name.trim().toLowerCase() && siblings.length === 1) {
-                                                        isPseudoSynthetic = true
+                                                    if (directChildren.length === 1 && directChildren[0].name.trim().toLowerCase() === account.name.trim().toLowerCase()) {
+                                                        hideRow = true
+                                                    }
+                                                }
+                                            } else if (account.type === 'Analítica') {
+                                                // Exception: Jetons analytic (1.5.1.1) should NOT be pseudo-synthetic since we're showing parent
+                                                if (account.id === '1.5.1.1') {
+                                                    // Keep as regular analytic, don't make pseudo-synthetic
+                                                } else {
+                                                    // Standard logic: if I am the only child and match parent name, I might look synthetic IF parent is hidden.
+                                                    // If parent is shown (because it had multiple children), I should look analytic.
+                                                    if (parts.length > 1) {
+                                                        const parentId = parts.slice(0, -1).join('.')
+                                                        const parent = accounts.find(a => a.id === parentId)
+                                                        const siblings = accounts.filter(a =>
+                                                            a.id.startsWith(parentId + '.') &&
+                                                            a.id.split('.').length === parts.length
+                                                        )
+
+                                                        // If parent matches name AND I am the only child (sibling count 1), 
+                                                        // then parent was hidden above. So I take over visually.
+                                                        if (parent && parent.name.trim().toLowerCase() === account.name.trim().toLowerCase() && siblings.length === 1) {
+                                                            isPseudoSynthetic = true
+                                                        }
                                                     }
                                                 }
                                             }
