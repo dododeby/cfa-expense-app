@@ -58,6 +58,12 @@ const ACTION_TYPE_LABELS: Record<string, { label: string; color: string }> = {
     legislation_uploaded: { label: "Legislação Adicionada", color: "bg-indigo-100 text-indigo-800" },
     legislation_deleted: { label: "Legislação Removida", color: "bg-rose-100 text-rose-800" },
 
+    // Declaration
+    declaration_submitted: { label: "Declaração Enviada", color: "bg-green-100 text-green-800" },
+    declaration_rectified: { label: "Declaração Retificada", color: "bg-amber-100 text-amber-800" },
+    rectification_unlocked_by_user: { label: "Retificação Iniciada", color: "bg-orange-100 text-orange-800" },
+    rectification_unlocked_by_cfa: { label: "Retificação Liberada (CFA)", color: "bg-purple-100 text-purple-800" },
+
     // System
     login: { label: "Login", color: "bg-indigo-100 text-indigo-800" },
     logout: { label: "Logout", color: "bg-slate-100 text-slate-800" },
@@ -150,10 +156,35 @@ export default function AuditHistory() {
 
             case 'expense_update':
             case 'revenue_update':
-                return entry.account_name || 'Conta'
+                return (
+                    <div className="flex flex-col">
+                        <span className="font-semibold">{entry.account_name || 'Conta'}</span>
+                        <span className="text-xs text-slate-400">
+                            Valor: {details.newValue?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                    </div>
+                )
 
             case 'message_sent':
                 return details.recipient || 'Mensagem'
+
+            case 'declaration_submitted':
+            case 'declaration_rectified':
+                return (
+                    <div className="flex flex-col">
+                        <span className="font-semibold">Recibo: {details.receiptNumber}</span>
+                        <span className="text-xs text-slate-500">
+                            Rec: {details.totalRevenue?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} |
+                            Des: {details.totalExpense?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                    </div>
+                )
+
+            case 'rectification_unlocked_by_user':
+                return 'Usuário iniciou processo de retificação'
+
+            case 'rectification_unlocked_by_cfa':
+                return 'CFA liberou retificação para a unidade'
 
             default:
                 return entry.account_name || 'N/A'
@@ -178,21 +209,40 @@ export default function AuditHistory() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">Todas as Ações</SelectItem>
+                            <SelectItem value="declaration_submitted">Entregas</SelectItem>
+                            <SelectItem value="declaration_rectified">Retificações</SelectItem>
                             <SelectItem value="expense_update">Despesas</SelectItem>
                             <SelectItem value="revenue_update">Receitas</SelectItem>
-                            <SelectItem value="message_sent">Mensagens Enviadas</SelectItem>
-                            <SelectItem value="message_read">Mensagens Lidas</SelectItem>
+                            <SelectItem value="message_sent">Mensagens</SelectItem>
                             <SelectItem value="responsible_update">Responsáveis</SelectItem>
                             <SelectItem value="report_generated">Relatórios</SelectItem>
-                            <SelectItem value="user_approved">Aprovações</SelectItem>
-                            <SelectItem value="user_suspended">Suspensões</SelectItem>
-                            <SelectItem value="user_deleted">Exclusões</SelectItem>
+                            <SelectItem value="user_approved">Usuários</SelectItem>
                             <SelectItem value="legislation_uploaded">Legislação</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+                {/* Stats Summary Area */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-slate-50 border rounded-lg p-4">
+                        <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Total de Ações</span>
+                        <div className="text-2xl font-bold text-slate-900 mt-1">{entries.length}</div>
+                    </div>
+                    <div className="bg-slate-50 border rounded-lg p-4">
+                        <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Ações hoje</span>
+                        <div className="text-2xl font-bold text-blue-600 mt-1">
+                            {entries.filter(e => new Date(e.created_at).toDateString() === new Date().toDateString()).length}
+                        </div>
+                    </div>
+                    <div className="bg-slate-50 border rounded-lg p-4">
+                        <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Declarações Enviadas</span>
+                        <div className="text-2xl font-bold text-green-600 mt-1">
+                            {entries.filter(e => e.action_type === 'declaration_submitted' || e.action_type === 'declaration_rectified').length}
+                        </div>
+                    </div>
+                </div>
+
                 {loading ? (
                     <div className="flex items-center justify-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
@@ -217,15 +267,29 @@ export default function AuditHistory() {
                                     {paginatedEntries.map((entry) => {
                                         const typeInfo = ACTION_TYPE_LABELS[entry.action_type] || ACTION_TYPE_LABELS.other
                                         return (
-                                            <TableRow key={entry.id}>
-                                                <TableCell className="text-sm">
-                                                    {formatDate(entry.created_at)}
-                                                </TableCell>
-                                                <TableCell className="text-sm font-medium">
-                                                    {entry.user_name || 'Sistema'}
+                                            <TableRow key={entry.id} className="hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="py-4">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-slate-900">
+                                                            {new Date(entry.created_at).toLocaleDateString('pt-BR')}
+                                                        </span>
+                                                        <span className="text-xs text-slate-500">
+                                                            {new Date(entry.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={typeInfo.color}>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
+                                                            {(entry.user_name || 'S').charAt(0).toUpperCase()}
+                                                        </div>
+                                                        <span className="text-sm font-medium text-slate-700">
+                                                            {entry.user_name || 'Sistema'}
+                                                        </span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge className={`${typeInfo.color} font-normal border-none shadow-none px-2.5 py-0.5`}>
                                                         {typeInfo.label}
                                                     </Badge>
                                                 </TableCell>

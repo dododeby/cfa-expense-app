@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { logAuditAction } from './audit-utils'
 
 export interface Declaration {
     id: string
@@ -141,6 +142,17 @@ export async function submitDeclaration(
         throw error
     }
 
+    // Log the action in audit_log
+    await logAuditAction({
+        actionType: isRectification ? 'declaration_rectified' : 'declaration_submitted',
+        actionDetails: {
+            receiptNumber: data.receipt_number,
+            totalRevenue: totals.revenue,
+            totalExpense: totals.expense,
+            rectificationCount: rectCount
+        }
+    })
+
     // Clear rectifying flag on successful submit
     sessionStorage.removeItem('isRectifying')
 
@@ -166,6 +178,15 @@ export async function markDeclarationAsDraft(): Promise<boolean> {
         console.error('Error marking as draft:', error)
         return false
     }
+
+    // Log the action
+    await logAuditAction({
+        actionType: 'rectification_unlocked_by_user',
+        actionDetails: {
+            declarationId: latest.id,
+            previousStatus: latest.status
+        }
+    })
 
     return true
 }
@@ -202,6 +223,15 @@ export async function cfaUnlockRectification(orgId: string): Promise<boolean> {
         console.error('CFA unlock error:', error)
         return false
     }
+
+    // Log the action
+    await logAuditAction({
+        actionType: 'rectification_unlocked_by_cfa',
+        actionDetails: {
+            targetOrgId: orgId,
+            declarationId: latest.id
+        }
+    })
 
     return true
 }
