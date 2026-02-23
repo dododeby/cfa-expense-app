@@ -57,6 +57,19 @@ export default function DashboardLayout({
             const type = sessionStorage.getItem('orgType') || ''
             const id = sessionStorage.getItem('orgId') || ''
             const name = sessionStorage.getItem('orgName') || ''
+
+            // Ensure userName is in sessionStorage for audit logs
+            if (session && !sessionStorage.getItem('userName')) {
+                const { data: userData } = await supabase
+                    .from('users')
+                    .select('full_name')
+                    .eq('id', session.user.id)
+                    .single()
+                if (userData?.full_name) {
+                    sessionStorage.setItem('userName', userData.full_name)
+                }
+            }
+
             setOrgType(type)
             setOrgId(id)
             setOrgName(name)

@@ -129,6 +129,7 @@ export async function logAction(
             .insert({
                 organization_id: orgId,
                 user_id: userId,
+                user_name: sessionStorage.getItem('userName') || sessionStorage.getItem('orgName') || 'Sistema',
                 action_type: actionType,
                 action_details: details,
                 account_id: details.account_id || '',

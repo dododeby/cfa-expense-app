@@ -60,6 +60,7 @@ export const addAuditEntry = async (entry: Omit<AuditEntry, 'id' | 'timestamp' |
             .insert({
                 organization_id: orgId,
                 user_id: userId,
+                user_name: sessionStorage.getItem('userName') || sessionStorage.getItem('orgName') || 'Sistema',
                 account_id: entry.accountId,
                 account_name: entry.accountName,
                 field: entry.field,

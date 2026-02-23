@@ -62,7 +62,7 @@ export default function LoginPage() {
             // Buscar dados do usuário
             const { data: userData, error: userError } = await supabase
                 .from('users')
-                .select('organization_id, status, organizations(id, name, type, estado)')
+                .select('organization_id, status, full_name, organizations(id, name, type, estado)')
                 .eq('id', authData.user.id)
                 .single()
 
@@ -80,6 +80,7 @@ export default function LoginPage() {
             const org = userData.organizations as any
             sessionStorage.setItem('userId', authData.user.id)
             sessionStorage.setItem('userEmail', authData.user.email || '')
+            sessionStorage.setItem('userName', userData.full_name || '') // Store full name
             sessionStorage.setItem('orgType', org.type)
             sessionStorage.setItem('orgId', org.id)
             sessionStorage.setItem('orgName', org.name)
