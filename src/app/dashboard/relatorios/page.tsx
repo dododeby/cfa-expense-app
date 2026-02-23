@@ -3,27 +3,48 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileSpreadsheet, BarChart3, Printer } from "lucide-react"
+import { FileSpreadsheet, BarChart3, Printer, Lock, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
 
 export default function RelatoriosPage() {
     const router = useRouter()
     const [orgType, setOrgType] = useState('')
+    const [hasDeclaration, setHasDeclaration] = useState(false)
+    const [loadingStatus, setLoadingStatus] = useState(true)
 
     useEffect(() => {
-        setOrgType(sessionStorage.getItem('orgType') || '')
+        const init = async () => {
+            setOrgType(sessionStorage.getItem('orgType') || '')
+            const orgId = sessionStorage.getItem('orgId') || ''
+
+            if (orgId) {
+                const { data } = await supabase
+                    .from('declarations')
+                    .select('id')
+                    .eq('organization_id', orgId)
+                    .order('delivery_date', { ascending: false })
+                    .limit(1)
+                    .single()
+
+                setHasDeclaration(!!data)
+            }
+            setLoadingStatus(false)
+        }
+        init()
     }, [])
 
     const handlePrintFormal = (type: string) => {
-        // Navigate to the printable view
         router.push(`/dashboard/relatorios/imprimir/${type}`)
     }
 
     const handlePrintDashboard = (type: string) => {
-        // Navigate to dashboard with print intent (could be query param or specific print page)
-        // For now, mapping to existing dashboards which user requested to just be "like the dashboard tab"
         router.push(`/dashboard/dashboards/${type}?print=true`)
     }
+
+    // Recibo disponível se: CFA ou já entregou a declaração
+    const isCFA = orgType === 'CFA'
+    const reciboDisponivel = isCFA || hasDeclaration
 
     return (
         <div className="space-y-8">
@@ -83,17 +104,38 @@ export default function RelatoriosPage() {
                             </div>
                         </Button>
 
-                        <Button
-                            variant="outline"
-                            className="justify-start h-14"
-                            onClick={() => handlePrintFormal('recibo')}
-                        >
-                            <Printer className="mr-4 h-5 w-5 text-slate-500" />
-                            <div className="text-left">
-                                <div className="font-semibold text-slate-700">Recibo de Entrega</div>
-                                <div className="text-xs text-slate-500">Comprovante de envio anual</div>
+                        {/* Recibo de Entrega — condicional ao status */}
+                        {loadingStatus ? (
+                            <div className="h-14 rounded-md border border-slate-200 bg-slate-50 flex items-center px-4 text-sm text-slate-400 animate-pulse">
+                                Verificando status...
                             </div>
-                        </Button>
+                        ) : reciboDisponivel ? (
+                            <Button
+                                variant="outline"
+                                className="justify-start h-14 border-green-300 hover:border-green-400 hover:bg-green-50"
+                                onClick={() => handlePrintFormal('recibo')}
+                            >
+                                <div className="flex items-center gap-4 w-full">
+                                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                    <div className="text-left">
+                                        <div className="font-semibold text-slate-700">Recibo de Entrega</div>
+                                        <div className="text-xs text-green-600 font-medium">
+                                            Declaração entregue — Comprovante disponível
+                                        </div>
+                                    </div>
+                                </div>
+                            </Button>
+                        ) : (
+                            <div className="h-14 rounded-md border border-slate-200 bg-slate-50/80 flex items-center px-4 gap-4 cursor-not-allowed">
+                                <Lock className="h-5 w-5 text-slate-400 flex-shrink-0" />
+                                <div className="text-left">
+                                    <div className="font-semibold text-slate-400">Recibo de Entrega</div>
+                                    <div className="text-xs text-slate-400">
+                                        Disponível somente após a entrega da declaração
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 

@@ -27,9 +27,11 @@ export default function RectificationGuard({ children }: { children: React.React
             const dec = await loadDeclaration()
             setDeclaration(dec)
 
-            const deadline = new Date('2026-03-31T23:59:59')
+            const deadline = new Date('2026-03-15T23:59:59')
             const now = new Date()
-            const pastDeadline = now > deadline
+            // CFA has no delivery deadline
+            const isCFA = sessionStorage.getItem('orgType') === 'CFA'
+            const pastDeadline = !isCFA && now > deadline
             setIsPastDeadline(pastDeadline)
 
             // ALWAYS prioritize database status over sessionStorage
@@ -39,9 +41,11 @@ export default function RectificationGuard({ children }: { children: React.React
                 setIsLocked(true)
                 setShowConfirm(true)
             } else if (dec && dec.status === 'draft') {
-                // If DB says draft, keep unlocked (user is rectifying)
+                // If DB says draft, keep unlocked (user is rectifying — may be CFA-unlocked)
                 sessionStorage.setItem('isRectifying', 'true')
                 setIsLocked(false)
+                // If past deadline but CFA unlocked (status=draft), override isPastDeadline
+                if (pastDeadline) setIsPastDeadline(false)
             } else {
                 // No declaration exists - unlocked
                 setIsLocked(false)
@@ -82,8 +86,12 @@ export default function RectificationGuard({ children }: { children: React.React
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Período de Preenchimento Encerrado</h2>
                 <p className="text-slate-600 max-w-md">
-                    O prazo para envio e retificação da declaração encerrou em 31/03/2026.
+                    O prazo para envio e retificação da declaração encerrou em 15/03/2026.
                     Não é possível realizar novas alterações.
+                    <br />
+                    <span className="text-xs text-slate-400 mt-1 block">
+                        Se necessário, solicite uma liberação de retificação ao CFA.
+                    </span>
                 </p>
             </div>
         )

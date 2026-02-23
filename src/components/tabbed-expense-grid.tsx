@@ -125,9 +125,10 @@ export function TabbedExpenseGrid() {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editValue, setEditValue] = useState("")
 
-    // Check if past delivery deadline (31/03/2026)
-    const deliveryDeadline = new Date('2026-03-31T23:59:59')
-    const isPastDeadline = new Date() > deliveryDeadline
+    // Check if past delivery deadline — CFA has no deadline
+    const deliveryDeadline = new Date('2026-03-15T23:59:59')
+    const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
+    const isPastDeadline = !isCFA && new Date() > deliveryDeadline
 
     // Load custom descriptions
     useEffect(() => {

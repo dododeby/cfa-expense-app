@@ -175,6 +175,7 @@ function DashboardPageContent() {
                             chartFilter={chartFilter}
                             setChartFilter={setChartFilter}
                             declaration={declaration}
+                            isCFA={isCFA}
                         />
                     </TabsContent>
 
@@ -198,6 +199,7 @@ function DashboardPageContent() {
                     chartFilter={chartFilter}
                     setChartFilter={setChartFilter}
                     declaration={declaration}
+                    isCFA={isCFA}
                 />
             )}
         </div>
@@ -225,6 +227,7 @@ interface DashboardContentProps {
     chartFilter: string;
     setChartFilter: (value: string) => void;
     declaration: any;
+    isCFA: boolean;
 }
 
 function DashboardContent({
@@ -239,7 +242,8 @@ function DashboardContent({
     groupData,
     chartFilter,
     setChartFilter,
-    declaration
+    declaration,
+    isCFA
 }: DashboardContentProps) {
     return (
         <>
@@ -289,10 +293,10 @@ function DashboardContent({
                     </CardHeader>
                     <CardContent>
                         {(() => {
-                            // Delivery deadline: 31/03/2026
-                            const deliveryDeadline = new Date('2026-03-31T23:59:59')
+                            // Delivery deadline: 15/03/2026 — CFA has no deadline
+                            const deliveryDeadline = new Date('2026-03-15T23:59:59')
                             const currentDate = new Date()
-                            const isPastDeadline = currentDate > deliveryDeadline
+                            const isPastDeadline = !isCFA && currentDate > deliveryDeadline
 
                             if (declaration && declaration.status === 'submitted') {
                                 return (
@@ -319,7 +323,7 @@ function DashboardContent({
                                     <>
                                         <div className="text-2xl font-bold text-red-600">Não Entregue</div>
                                         <p className="text-xs text-red-600">
-                                            Prazo encerrado em 31/03/2026
+                                            Prazo encerrado em 15/03/2026
                                         </p>
                                     </>
                                 )

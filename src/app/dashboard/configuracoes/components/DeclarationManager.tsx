@@ -34,10 +34,12 @@ export default function DeclarationManager() {
     const [declarationHistory, setDeclarationHistory] = useState<Declaration[]>([])
     const [validationError, setValidationError] = useState<string | null>(null)
 
-    // Deadline: March 31, 2026
-    const deadline = new Date('2026-03-31T23:59:59')
+    // Deadline: March 15, 2026 — CFA has no deadline
+    const deadline = new Date('2026-03-15T23:59:59')
     const now = new Date()
-    const isPastDeadline = now > deadline
+    const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
+    // isPastDeadline is overridden if CFA unlocked rectification (status = 'draft') or if org is CFA
+    const [isPastDeadline, setIsPastDeadline] = useState(!isCFA && now > deadline)
 
     useEffect(() => {
         loadData()
@@ -48,6 +50,11 @@ export default function DeclarationManager() {
         try {
             const dec = await loadDeclaration()
             setDeclaration(dec)
+
+            // If CFA unlocked (status=draft), allow delivery even after deadline
+            if (dec && dec.status === 'draft' && now > deadline) {
+                setIsPastDeadline(false)
+            }
 
             // Load history for receipt
             const history = await loadDeclarationHistory()
@@ -158,7 +165,7 @@ export default function DeclarationManager() {
                 <CardHeader>
                     <CardTitle>Entrega da Declaração</CardTitle>
                     <CardDescription>
-                        Envie os dados consolidados para o CFA. Prazo final: 31/03/2026.
+                        Envie os dados consolidados para o CFA. Prazo final: 15/03/2026.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -167,7 +174,7 @@ export default function DeclarationManager() {
                             <AlertTriangle className="h-4 w-4" />
                             <AlertTitle>Prazo Encerrado</AlertTitle>
                             <AlertDescription>
-                                O prazo de entrega e retificação encerrou em 31/03/2026. Não é possível realizar novas entregas ou alterações.
+                                O prazo de entrega e retificação encerrou em 15/03/2026. Não é possível realizar novas entregas ou alterações.
                             </AlertDescription>
                         </Alert>
                     ) : (

@@ -76,10 +76,19 @@ export async function submitDeclaration(
     const orgName = sessionStorage.getItem('orgName')
     if (!orgId || !orgName) return null
 
-    // Enforce Deadline
-    const deadline = new Date('2026-03-31T23:59:59')
-    if (new Date() > deadline) {
-        throw new Error('Prazo encerrado.')
+    // Enforce Deadline — CFA has no deadline; bypass also if CFA unlocked (org has a draft declaration)
+    const deadline = new Date('2026-03-15T23:59:59')
+    const now = new Date()
+    const orgType = sessionStorage.getItem('orgType')
+    const isCFA = orgType === 'CFA'
+
+    if (!isCFA && now > deadline) {
+        // Check if there is a draft declaration for this org (meaning CFA unlocked it)
+        const existingDec = await loadDeclaration()
+        if (!existingDec || existingDec.status !== 'draft') {
+            throw new Error('Prazo encerrado.')
+        }
+        // else: CFA unlocked — allow rectification after deadline
     }
 
     // Generate simplified receipt number (hash-based or sequential if possible, here using hash/random for demo)
@@ -155,6 +164,42 @@ export async function markDeclarationAsDraft(): Promise<boolean> {
 
     if (error) {
         console.error('Error marking as draft:', error)
+        return false
+    }
+
+    return true
+}
+
+/**
+ * CFA action: Mark a specific organization's latest declaration as draft (unlock rectification)
+ * Works even after the deadline \u2014 the CRA will then be able to re-submit.
+ */
+export async function cfaUnlockRectification(orgId: string): Promise<boolean> {
+    const { data: latest, error: fetchError } = await supabase
+        .from('declarations')
+        .select('id, status')
+        .eq('organization_id', orgId)
+        .order('delivery_date', { ascending: false })
+        .limit(1)
+        .single()
+
+    if (fetchError || !latest) {
+        console.error('CFA unlock: no declaration found for org', orgId)
+        return false
+    }
+
+    if (latest.status === 'draft') {
+        // Already unlocked
+        return true
+    }
+
+    const { error } = await supabase
+        .from('declarations')
+        .update({ status: 'draft' })
+        .eq('id', latest.id)
+
+    if (error) {
+        console.error('CFA unlock error:', error)
         return false
     }
 
