@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import allRevenuesData from "@/lib/all-revenues.json"
@@ -23,9 +23,9 @@ export default function ConsolidatedRevenuesPage() {
     const [selectedRegional, setSelectedRegional] = useState('consolidado')
     const [consolidatedData, setConsolidatedData] = useState<ConsolidatedRevenue>({})
     const [loading, setLoading] = useState(true)
-    const [allOrgs, setAllOrgs] = useState<{ id: string; name: string }[]>([])
+    const [allOrgs, setAllOrgs] = useState<{ id: string; name: string; type: string }[]>([])
+    const [cfaOrgId, setCfaOrgId] = useState<string | null>(null)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [fullData, setFullData] = useState<{ [orgId: string]: ConsolidatedRevenue }>({})
 
     const accounts: RevenueAccount[] = allRevenuesData as RevenueAccount[]
@@ -36,6 +36,10 @@ export default function ConsolidatedRevenuesPage() {
 
             const orgs = await loadOrganizations()
             setAllOrgs(orgs)
+
+            // Identify CFA org
+            const cfaOrg = orgs.find((o: any) => o.type === 'CFA' || o.name === 'CFA')
+            if (cfaOrg) setCfaOrgId(cfaOrg.id)
 
             const allData = await loadConsolidatedRevenues()
             setFullData(allData)
@@ -70,11 +74,6 @@ export default function ConsolidatedRevenuesPage() {
     let totalCapital = 0
     let totalGeral = 0
 
-    // Only sum Analytic accounts to avoid double counting if we iterate all
-    // But our hierarchy logic for display is: Parent = Sum(Children).
-    // So for "Total Geral" we can sum Level 1 items ("1" -> Corrente, "2" -> Capital).
-    // Or just sum all Analytic items.
-
     // Let's sum Analytic items for accuracy
     accounts.filter(a => a.type === 'Analítica').forEach(acc => {
         const val = consolidatedData[acc.id]?.value || 0
@@ -86,6 +85,10 @@ export default function ConsolidatedRevenuesPage() {
             totalCapital += val
         }
     })
+
+    // Cota-Parte: value of '1.7' filled ONLY by the CFA organization
+    const cotaParte = cfaOrgId ? (fullData[cfaOrgId]?.['1.7']?.value || 0) : 0
+    const totalGeralNet = totalCorrentes + totalCapital - cotaParte
 
     const isConsolidated = selectedRegional === 'consolidado'
     const selectedRegionalName = allOrgs.find(r => r.id === selectedRegional)?.name || 'Consolidado'
@@ -124,7 +127,7 @@ export default function ConsolidatedRevenuesPage() {
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className={`grid grid-cols-1 ${isConsolidated ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'} gap-4`}>
                 <Card className="border-blue-100 bg-blue-50/50">
                     <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="text-xs font-medium text-blue-700">
@@ -151,18 +154,48 @@ export default function ConsolidatedRevenuesPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-blue-300 bg-blue-50">
-                    <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="text-xs font-medium text-blue-900">
-                            Total Arrecadado
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-3 pb-3">
-                        <div className="text-2xl font-bold text-blue-950">
-                            {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </div>
-                    </CardContent>
-                </Card>
+                {isConsolidated ? (
+                    <>
+                        <Card className="border-amber-100 bg-amber-50/50">
+                            <CardHeader className="pb-2 px-3 pt-3">
+                                <CardTitle className="text-xs font-medium text-amber-700">
+                                    Cota-Parte CRA's (Dedução)
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-2xl font-bold text-amber-900">
+                                    - {cotaParte.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-blue-500 bg-blue-600 text-white">
+                            <CardHeader className="pb-2 px-3 pt-3">
+                                <CardTitle className="text-sm font-bold text-white">
+                                    Total Arrecadado no Sistema CFA/CRA's
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-2xl font-bold">
+                                    {totalGeralNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </>
+                ) : (
+                    <Card className="border-blue-300 bg-blue-50">
+                        <CardHeader className="pb-2 px-3 pt-3">
+                            <CardTitle className="text-xs font-medium text-blue-900">
+                                Total Arrecadado
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-3 pb-3">
+                            <div className="text-2xl font-bold text-blue-950">
+                                {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
 
             {/* Grid */}

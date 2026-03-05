@@ -1,11 +1,11 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import allRevenuesData from "@/lib/all-revenues.json"
 import { loadRevenueData } from "@/lib/revenue-data"
 import { loadConsolidatedRevenues } from "@/lib/revenue-data-consolidated"
@@ -25,11 +25,12 @@ function RevenueDashboardContent() {
     const [loading, setLoading] = useState(true)
     const [viewMode, setViewMode] = useState<'proprio' | 'consolidado'>('proprio')
     const [selectedRegional, setSelectedRegional] = useState<string>('consolidado')
-    const [allOrgs, setAllOrgs] = useState<{ id: string; name: string }[]>([])
+    const [allOrgs, setAllOrgs] = useState<{ id: string; name: string; type: string }[]>([])
     const [consolidatedData, setConsolidatedData] = useState<any>({})
     const [chartSampling, setChartSampling] = useState<'all' | 'top14' | 'bottom14'>('all')
     const [chartRevenueType, setChartRevenueType] = useState<string>('all')
     const [fullConsolidatedData, setFullConsolidatedData] = useState<{ [orgId: string]: any }>({})
+    const [cfaOrgId, setCfaOrgId] = useState<string | null>(null)
 
     const searchParams = useSearchParams()
     const isPrintMode = searchParams.get('print') === 'true'
@@ -50,8 +51,12 @@ function RevenueDashboardContent() {
                 const orgs = await loadOrganizations()
                 setAllOrgs(orgs)
 
+                // Identify CFA org
+                const cfaOrg = orgs.find((o: any) => o.type === 'CFA' || o.name === 'CFA')
+                if (cfaOrg) setCfaOrgId(cfaOrg.id)
+
                 const allData = await loadConsolidatedRevenues()
-                setFullConsolidatedData(allData) // Store full data for comparison chart
+                setFullConsolidatedData(allData)
 
                 if (selectedRegional === 'consolidado') {
                     const summed: any = {}
@@ -77,7 +82,6 @@ function RevenueDashboardContent() {
 
     useEffect(() => {
         if (!loading && isPrintMode) {
-            // Small delay to ensure charts are rendered
             setTimeout(() => {
                 window.print()
             }, 3000)
@@ -103,6 +107,15 @@ function RevenueDashboardContent() {
         }
     })
 
+    const isFullConsolidated = viewMode === 'consolidado' && selectedRegional === 'consolidado'
+    const showDeduction = isCFA && isFullConsolidated
+
+    // Cota-Parte: value of '1.7' filled ONLY by the CFA organization
+    const cotaParteValue = (isFullConsolidated && cfaOrgId)
+        ? (fullConsolidatedData[cfaOrgId]?.['1.7']?.value || 0)
+        : 0
+    const totalArrecadadoNet = totalCorrentes + totalCapital - cotaParteValue
+
     // Prepare chart data - group by Level 2 categories
     const categoryData: { name: string; value: number }[] = []
     const categoryMap = new Map<string, number>()
@@ -114,7 +127,7 @@ function RevenueDashboardContent() {
             if (parts.length >= 2) {
                 const categoryId = `${parts[0]}.${parts[1]}`
                 const category = revenues.find(r => r.id === categoryId)
-                const categoryName = category?.name || 'Outros'
+                let categoryName = category?.name || 'Outros'
 
                 categoryMap.set(categoryName, (categoryMap.get(categoryName) || 0) + val)
             }
@@ -143,20 +156,11 @@ function RevenueDashboardContent() {
             const orgData = fullConsolidatedData[org.id] || {}
             let total = 0
 
-            // Filter calculation based on chartRevenueType
             if (chartRevenueType === 'all') {
-                // Sum all analytical
                 analyticalRevenues.forEach(rev => {
                     total += orgData[rev.id]?.value || 0
                 })
             } else {
-                // Specific revenue type (could be synthetic or analytical logic)
-                // If it's analytical, just define.
-                // If the user selected a synthetic group (like "1.1"), we should sum its children.
-                // For simplicity, let's look if it's exact match first.
-                // Logic: Sum all revenues that start with the selected ID (handles both 1.1 and 1.1.X)
-                // EXCEPT if we only want analytical.
-                // Let's iterate analyticals and check prefix.
                 analyticalRevenues.forEach(rev => {
                     if (rev.id === chartRevenueType || rev.id.startsWith(chartRevenueType + '.')) {
                         total += orgData[rev.id]?.value || 0
@@ -170,10 +174,8 @@ function RevenueDashboardContent() {
             }
         })
 
-        // Sort by Value Descending
         chartData.sort((a, b) => b.value - a.value)
 
-        // Apply Sampling
         if (chartSampling === 'top14') {
             chartData = chartData.slice(0, 14)
         } else if (chartSampling === 'bottom14') {
@@ -189,12 +191,6 @@ function RevenueDashboardContent() {
     if (loading) {
         return <div className="text-center py-12" suppressHydrationWarning={true}>Carregando dados...</div>
     }
-
-
-
-
-
-    // ... existing logic ...
 
     return (
         <div className="space-y-6">
@@ -251,7 +247,7 @@ function RevenueDashboardContent() {
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className={`grid grid-cols-1 ${showDeduction ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'} gap-4`}>
                 <Card className="border-blue-100 bg-blue-50/50">
                     <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="text-xs font-medium text-blue-700">
@@ -284,23 +280,55 @@ function RevenueDashboardContent() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-blue-300 bg-blue-50">
-                    <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="text-xs font-medium text-blue-900">
-                            Total Arrecadado
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-3 pb-3">
-                        <div className="text-2xl font-bold text-blue-950">
-                            {totalReceitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </div>
-                    </CardContent>
-                </Card>
+                {showDeduction ? (
+                    <>
+                        <Card className="border-amber-100 bg-amber-50/50">
+                            <CardHeader className="pb-2 px-3 pt-3">
+                                <CardTitle className="text-xs font-medium text-amber-700">
+                                    Cota-Parte CRA's (Dedução)
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-2xl font-bold text-amber-900">
+                                    - {cotaParteValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </div>
+                                <div className="text-xs text-amber-600 font-medium">
+                                    Valor deduzido do total
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-blue-500 bg-blue-600 text-white">
+                            <CardHeader className="pb-2 px-3 pt-3">
+                                <CardTitle className="text-sm font-bold text-white">
+                                    Total Arrecadado no Sistema CFA/CRA's
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-2xl font-bold">
+                                    {totalArrecadadoNet.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </>
+                ) : (
+                    <Card className="border-blue-300 bg-blue-50">
+                        <CardHeader className="pb-2 px-3 pt-3">
+                            <CardTitle className="text-xs font-medium text-blue-900">
+                                Total Arrecadado
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-3 pb-3">
+                            <div className="text-2xl font-bold text-blue-950">
+                                {totalReceitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
 
             {/* Charts Area */}
             {showComparisonChart ? (
-                // Regional Comparison Chart (Consolidated All View)
                 <Card className="flex flex-col">
                     <CardHeader>
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -367,7 +395,6 @@ function RevenueDashboardContent() {
                     </CardContent>
                 </Card>
             ) : (
-                // Original Charts (Single Organization or specific view)
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Pie Chart */}
                     <Card>
@@ -435,7 +462,6 @@ function RevenueDashboardContent() {
                         height: 100% !important;
                         overflow: hidden !important;
                     }
-                    /* Override space-y-6 margin */
                     .space-y-6 > :not([hidden]) ~ :not([hidden]) {
                         margin-top: 0.5rem !important;
                     }
@@ -449,11 +475,9 @@ function RevenueDashboardContent() {
                     .grid {
                         gap: 0.5rem !important;
                     }
-                    /* Force 3-column layout for summary cards */
                     .md\\:grid-cols-3 {
                         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
                     }
-                    /* Force 2-column layout for charts in print */
                     .grid-cols-1 {
                         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                     }
@@ -461,7 +485,6 @@ function RevenueDashboardContent() {
                         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                         display: grid !important;
                     }
-                    /* Reduce card padding */
                     [class*="Card"] {
                         padding: 0.5rem !important;
                         margin-bottom: 0.2rem !important;
@@ -482,12 +505,10 @@ function RevenueDashboardContent() {
                         font-size: 0.8rem !important;
                         margin-top: 0.2rem !important;
                     }
-                    /* Maximize chart heights and shift left */
                     .recharts-wrapper {
                         height: 250px !important;
                         margin-left: -20px !important;
                     }
-                    /* Increase and center pie chart, shift left */
                     .recharts-pie {
                         transform: scale(1.5) translateX(-15px) !important;
                         transform-origin: center center !important;
@@ -495,21 +516,18 @@ function RevenueDashboardContent() {
                     .recharts-pie-sector {
                         transform-origin: center center !important;
                     }
-                    /* Restore summary card text size */
                     .text-2xl {
                         font-size: 1.4rem !important;
                     }
                     .text-xs {
                         font-size: 0.75rem !important;
                     }
-                    /* Adjust margins */
                     .mb-4, .mb-8 {
                         margin-bottom: 0.2rem !important;
                     }
                     .pb-2, .pt-3, .px-3 {
                         padding: 0.2rem !important;
                     }
-                    /* Hide all scrollbars */
                     ::-webkit-scrollbar {
                         display: none !important;
                         width: 0 !important;
