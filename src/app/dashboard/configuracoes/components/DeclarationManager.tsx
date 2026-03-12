@@ -7,6 +7,8 @@ import { loadDeclaration, loadDeclarationHistory, submitDeclaration, type Declar
 import { loadResponsibleData } from "@/lib/responsible-data"
 import { loadRevenueData } from "@/lib/revenue-data"
 import { loadExpenseData } from "@/lib/expense-data"
+import allAccountsData from "@/lib/all-accounts.json"
+import allRevenuesData from "@/lib/all-revenues.json"
 import { useToast } from "@/hooks/use-toast"
 import {
     Dialog,
@@ -86,16 +88,29 @@ export default function DeclarationManager() {
         const revenues = await loadRevenueData()
         const expenses = await loadExpenseData()
 
+        const validRevenueIds = new Set(allRevenuesData.map(r => r.id))
+        const validExpenseIds = new Set(allAccountsData.map(a => a.id))
+
         let totalRev = 0
-        Object.values(revenues).forEach((r: any) => totalRev += (r.value || 0))
+        const filteredRevenues: any = {}
+        Object.entries(revenues).forEach(([id, r]: [string, any]) => {
+            if (validRevenueIds.has(id)) {
+                totalRev += (r.value || 0)
+                filteredRevenues[id] = r
+            }
+        })
 
         let totalExp = 0
         let totalFin = 0
         let totalApoio = 0
-        Object.values(expenses).forEach((e: any) => {
-            totalExp += (e.total || 0)
-            totalFin += (e.finalistica || 0)
-            totalApoio += ((e.total || 0) - (e.finalistica || 0))
+        const filteredExpenses: any = {}
+        Object.entries(expenses).forEach(([id, e]: [string, any]) => {
+            if (validExpenseIds.has(id)) {
+                totalExp += (e.total || 0)
+                totalFin += (e.finalistica || 0)
+                totalApoio += ((e.total || 0) - (e.finalistica || 0))
+                filteredExpenses[id] = e
+            }
         })
 
         setTotals({
@@ -103,8 +118,8 @@ export default function DeclarationManager() {
             expense: totalExp,
             finalistica: totalFin,
             apoio: totalApoio,
-            rawRevenues: revenues,
-            rawExpenses: expenses
+            rawRevenues: filteredRevenues,
+            rawExpenses: filteredExpenses
         })
     }
 
