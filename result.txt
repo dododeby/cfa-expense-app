@@ -1,0 +1,33 @@
+﻿--- DIAGN├ôSTICO DE DADOS ---
+
+>>> Total de registros na tabela 'expenses': 0
+
+Resumo por Organiza├º├úo:
+CFA                       (ID: cfa...) 0 registros. ├Ül. Update: Nunca
+CRA-AC                    (ID: cra-ac...) 0 registros. ├Ül. Update: Nunca
+CRA-AL                    (ID: cra-al...) 0 registros. ├Ül. Update: Nunca
+CRA-AM                    (ID: cra-am...) 0 registros. ├Ül. Update: Nunca
+CRA-AP                    (ID: cra-ap...) 0 registros. ├Ül. Update: Nunca
+CRA-BA                    (ID: cra-ba...) 0 registros. ├Ül. Update: Nunca
+CRA-CE                    (ID: cra-ce...) 0 registros. ├Ül. Update: Nunca
+CRA-DF                    (ID: cra-df...) 0 registros. ├Ül. Update: Nunca
+CRA-ES                    (ID: cra-es...) 0 registros. ├Ül. Update: Nunca
+CRA-GO                    (ID: cra-go...) 0 registros. ├Ül. Update: Nunca
+CRA-MA                    (ID: cra-ma...) 0 registros. ├Ül. Update: Nunca
+CRA-MG                    (ID: cra-mg...) 0 registros. ├Ül. Update: Nunca
+CRA-MS                    (ID: cra-ms...) 0 registros. ├Ül. Update: Nunca
+CRA-MT                    (ID: cra-mt...) 0 registros. ├Ül. Update: Nunca
+CRA-PA                    (ID: cra-pa...) 0 registros. ├Ül. Update: Nunca
+CRA-PB                    (ID: cra-pb...) 0 registros. ├Ül. Update: Nunca
+CRA-PE                    (ID: cra-pe...) 0 registros. ├Ül. Update: Nunca
+CRA-PI                    (ID: cra-pi...) 0 registros. ├Ül. Update: Nunca
+CRA-PR                    (ID: cra-pr...) 0 registros. ├Ül. Update: Nunca
+CRA-RJ                    (ID: cra-rj...) 0 registros. ├Ül. Update: Nunca
+CRA-RN                    (ID: cra-rn...) 0 registros. ├Ül. Update: Nunca
+CRA-RO                    (ID: cra-ro...) 0 registros. ├Ül. Update: Nunca
+CRA-RR                    (ID: cra-rr...) 0 registros. ├Ül. Update: Nunca
+CRA-RS                    (ID: cra-rs...) 0 registros. ├Ül. Update: Nunca
+CRA-SC                    (ID: cra-sc...) 0 registros. ├Ül. Update: Nunca
+CRA-SE                    (ID: cra-se...) 0 registros. ├Ül. Update: Nunca
+CRA-SP                    (ID: cra-sp...) 0 registros. ├Ül. Update: Nunca
+CRA-TO                    (ID: cra-to...) 0 registros. ├Ül. Update: Nunca

@@ -1,0 +1,14 @@
+﻿--- DIAGN├ôSTICO DE ID (COM ALTO LIMIT) ---
+Total de organiza├º├Áes com despesas no banco: 22
+IDs das Organiza├º├Áes no banco com despesas: [cra-pr, cra-mg, cfa, cra-am, cra-ce, cra-rs, cra-df, cra-ro, cra-sc, cra-rn, cra-mt, cra-rr, cra-ba, cra-al, cra-sp, cra-to, cra-go, cra-es, cra-se, cra-pa, cra-pi, cra-rj]
+
+CRA-PE (id: 'cra-pe') est├í presente na tabela de despesas? N├âO
+Filtro por cra-*:  [
+  'cra-pr', 'cra-mg', 'cra-am',
+  'cra-ce', 'cra-rs', 'cra-df',
+  'cra-ro', 'cra-sc', 'cra-rn',
+  'cra-mt', 'cra-rr', 'cra-ba',
+  'cra-al', 'cra-sp', 'cra-to',
+  'cra-go', 'cra-es', 'cra-se',
+  'cra-pa', 'cra-pi', 'cra-rj'
+]

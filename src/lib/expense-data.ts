@@ -88,17 +88,37 @@ export async function saveExpenseEntry(
  */
 export async function loadConsolidatedData(): Promise<{ [orgId: string]: ExpenseData }> {
     try {
-        const { data, error } = await supabase
-            .from('expenses')
-            .select('organization_id, account_id, total, finalistica')
-            .limit(50000)
+        let allData: any[] = []
+        let lastId = 0
+        let hasMore = true
+        const PAGE_SIZE = 1000
 
-        if (error) throw error
+        // Fetch all records in pages to avoid Supabase default limit (1000)
+        // or any server-side caps. Total records expected ~1.5k to 10k
+        while (hasMore) {
+            const { data, error } = await supabase
+                .from('expenses')
+                .select('organization_id, account_id, total, finalistica')
+                .range(allData.length, allData.length + PAGE_SIZE - 1)
+
+            if (error) throw error
+            
+            if (data && data.length > 0) {
+                allData = [...allData, ...data]
+                if (data.length < PAGE_SIZE) {
+                    hasMore = false
+                }
+            } else {
+                hasMore = false
+            }
+        }
+
+        console.log(`--- loadConsolidatedData FINISHED ---`, { totalFetched: allData.length })
 
         // Group by organization
         const consolidated: { [orgId: string]: ExpenseData } = {}
 
-        data?.forEach(row => {
+        allData.forEach(row => {
             if (!consolidated[row.organization_id]) {
                 consolidated[row.organization_id] = {}
             }

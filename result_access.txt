@@ -1,0 +1,3 @@
+﻿
+--- SIMULANDO CONSULTA DO USU├üRIO CFA (ANON KEY) ---
+Resultado para CRA-PE com ANON KEY: 65 registros encontrados. Erro: Nenhum

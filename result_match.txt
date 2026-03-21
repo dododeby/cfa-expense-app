@@ -1,0 +1,7 @@
+﻿--- COMPARA├ç├âO DE CONTAS CRA-PE ---
+Total de registros no banco para PE: 65
+
+Resumo:
+- Contas correspondentes e anal├¡ticas: 65
+- Contas n├úo encontradas no JSON: 0
+- Contas encontradas mas N├âO s├úo anal├¡ticas: 0

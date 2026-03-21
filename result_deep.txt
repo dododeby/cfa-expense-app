@@ -1,0 +1,33 @@
+﻿--- DIAGN├ôSTICO PROFUNDO (SERVICE ROLE) ---
+
+>>> Total REAL de registros na tabela 'expenses': 1407
+
+Resumo por Organiza├º├úo:
+CFA                       (ID: cfa) 7 registros. ├Ültima: 2026-02-23T13:44:54.384+00:00
+CRA-AC                    (ID: cra-ac) 41 registros. ├Ültima: 2026-03-18T23:00:37.518+00:00
+CRA-AL                    (ID: cra-al) 45 registros. ├Ültima: 2026-03-03T17:09:24.69+00:00
+CRA-AM                    (ID: cra-am) 55 registros. ├Ültima: 2026-03-16T21:08:00.033+00:00
+CRA-AP                    (ID: cra-ap) 0 registros. ├Ültima: Nunca
+CRA-BA                    (ID: cra-ba) 63 registros. ├Ültima: 2026-03-06T14:24:41.571+00:00
+CRA-CE                    (ID: cra-ce) 28 registros. ├Ültima: 2026-02-23T16:36:14.797+00:00
+CRA-DF                    (ID: cra-df) 56 registros. ├Ültima: 2026-03-20T19:47:43.059+00:00
+CRA-ES                    (ID: cra-es) 60 registros. ├Ültima: 2026-03-14T17:35:37.445+00:00
+CRA-GO                    (ID: cra-go) 17 registros. ├Ültima: 2026-03-04T14:07:00.301+00:00
+CRA-MA                    (ID: cra-ma) 51 registros. ├Ültima: 2026-03-20T18:49:17.854+00:00
+CRA-MG                    (ID: cra-mg) 78 registros. ├Ültima: 2026-02-26T13:02:48.539+00:00
+CRA-MS                    (ID: cra-ms) 0 registros. ├Ültima: Nunca
+CRA-MT                    (ID: cra-mt) 54 registros. ├Ültima: 2026-03-17T12:35:20.258+00:00
+CRA-PA                    (ID: cra-pa) 73 registros. ├Ültima: 2026-03-13T12:52:44.248+00:00
+CRA-PB                    (ID: cra-pb) 0 registros. ├Ültima: Nunca
+CRA-PE                    (ID: cra-pe) 65 registros. ├Ültima: 2026-03-14T23:05:15.255+00:00
+CRA-PI                    (ID: cra-pi) 55 registros. ├Ültima: 2026-03-14T20:08:04.679+00:00
+CRA-PR                    (ID: cra-pr) 100 registros. ├Ültima: 2026-03-12T16:08:19.701+00:00
+CRA-RJ                    (ID: cra-rj) 69 registros. ├Ültima: 2026-03-13T18:06:38.492+00:00
+CRA-RN                    (ID: cra-rn) 58 registros. ├Ültima: 2026-03-02T21:11:22.837+00:00
+CRA-RO                    (ID: cra-ro) 64 registros. ├Ültima: 2026-03-02T21:57:05.898+00:00
+CRA-RR                    (ID: cra-rr) 36 registros. ├Ültima: 2026-03-20T21:54:01.294+00:00
+CRA-RS                    (ID: cra-rs) 86 registros. ├Ültima: 2026-03-17T19:10:52.999+00:00
+CRA-SC                    (ID: cra-sc) 71 registros. ├Ültima: 2026-03-02T20:37:03.1+00:00
+CRA-SE                    (ID: cra-se) 43 registros. ├Ültima: 2026-03-18T17:41:37.959+00:00
+CRA-SP                    (ID: cra-sp) 84 registros. ├Ültima: 2026-03-11T22:54:02.667+00:00
+CRA-TO                    (ID: cra-to) 48 registros. ├Ültima: 2026-03-04T14:28:32.935+00:00

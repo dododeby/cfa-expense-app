@@ -1,0 +1,55 @@
+﻿--- DIAGN├ôSTICO DE ID (MAI├ÜSCULA/MIN├ÜSCULA/ESPA├çOS) ---
+
+IDs na tabela ORGANIZATIONS:
+'cra-ac' (CRA-AC)
+'cra-go' (CRA-GO)
+'cra-ms' (CRA-MS)
+'cra-pb' (CRA-PB)
+'cra-rr' (CRA-RR)
+'cra-rs' (CRA-RS)
+'cra-se' (CRA-SE)
+'cfa' (CFA)
+'cra-ce' (CRA-CE)
+'cra-mg' (CRA-MG)
+'cra-rn' (CRA-RN)
+'cra-ro' (CRA-RO)
+'cra-al' (CRA-AL)
+'cra-sc' (CRA-SC)
+'cra-to' (CRA-TO)
+'cra-am' (CRA-AM)
+'cra-ap' (CRA-AP)
+'cra-ba' (CRA-BA)
+'cra-sp' (CRA-SP)
+'cra-pr' (CRA-PR)
+'cra-pa' (CRA-PA)
+'cra-rj' (CRA-RJ)
+'cra-es' (CRA-ES)
+'cra-pi' (CRA-PI)
+'cra-pe' (CRA-PE)
+'cra-mt' (CRA-MT)
+'cra-df' (CRA-DF)
+'cra-ma' (CRA-MA)
+
+IDs (organization_id) presentes na tabela EXPENSES:
+'cra-pr' --> Ô£ô MATCH!
+'cra-mg' --> Ô£ô MATCH!
+'cfa' --> Ô£ô MATCH!
+'cra-am' --> Ô£ô MATCH!
+'cra-ce' --> Ô£ô MATCH!
+'cra-rs' --> Ô£ô MATCH!
+'cra-df' --> Ô£ô MATCH!
+'cra-ro' --> Ô£ô MATCH!
+'cra-sc' --> Ô£ô MATCH!
+'cra-rn' --> Ô£ô MATCH!
+'cra-mt' --> Ô£ô MATCH!
+'cra-rr' --> Ô£ô MATCH!
+'cra-ba' --> Ô£ô MATCH!
+'cra-al' --> Ô£ô MATCH!
+'cra-sp' --> Ô£ô MATCH!
+'cra-to' --> Ô£ô MATCH!
+'cra-go' --> Ô£ô MATCH!
+'cra-es' --> Ô£ô MATCH!
+'cra-se' --> Ô£ô MATCH!
+'cra-pa' --> Ô£ô MATCH!
+'cra-pi' --> Ô£ô MATCH!
+'cra-rj' --> Ô£ô MATCH!
