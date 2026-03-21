@@ -91,7 +91,7 @@ export async function loadConsolidatedData(): Promise<{ [orgId: string]: Expense
         const { data, error } = await supabase
             .from('expenses')
             .select('organization_id, account_id, total, finalistica')
-            .limit(20000)
+            .limit(50000)
 
         if (error) throw error
 
