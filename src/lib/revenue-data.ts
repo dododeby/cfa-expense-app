@@ -27,6 +27,7 @@ export async function loadRevenueData(): Promise<RevenueData> {
         .from('revenues')
         .select('account_id, value')
         .eq('organization_id', orgId)
+        .limit(20000)
 
     if (error) {
         console.error('Error loading revenues:', error)

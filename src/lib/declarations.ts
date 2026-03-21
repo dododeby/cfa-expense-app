@@ -78,7 +78,7 @@ export async function submitDeclaration(
     if (!orgId || !orgName) return null
 
     // Enforce Deadline — CFA has no deadline; bypass also if CFA unlocked (org has a draft declaration)
-    const deadline = new Date('2026-03-20T23:59:59')
+    const deadline = new Date('2026-03-24T23:59:59')
     const now = new Date()
     const orgType = sessionStorage.getItem('orgType')
     const isCFA = orgType === 'CFA'

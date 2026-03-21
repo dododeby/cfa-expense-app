@@ -19,6 +19,7 @@ export async function loadExpenseData(): Promise<ExpenseData> {
             .from('expenses')
             .select('account_id, total, finalistica')
             .eq('organization_id', orgId)
+            .limit(20000)
 
         if (error) throw error
 
@@ -90,6 +91,7 @@ export async function loadConsolidatedData(): Promise<{ [orgId: string]: Expense
         const { data, error } = await supabase
             .from('expenses')
             .select('organization_id, account_id, total, finalistica')
+            .limit(20000)
 
         if (error) throw error
 
@@ -122,6 +124,7 @@ export async function loadOrganizationData(orgId: string): Promise<ExpenseData> 
             .from('expenses')
             .select('account_id, total, finalistica')
             .eq('organization_id', orgId)
+            .limit(20000)
 
         if (error) throw error
 

@@ -27,7 +27,7 @@ export default function RectificationGuard({ children }: { children: React.React
             const dec = await loadDeclaration()
             setDeclaration(dec)
 
-            const deadline = new Date('2026-03-20T23:59:59')
+            const deadline = new Date('2026-03-24T23:59:59')
             const now = new Date()
             // CFA has no delivery deadline
             const isCFA = sessionStorage.getItem('orgType') === 'CFA'
@@ -86,7 +86,7 @@ export default function RectificationGuard({ children }: { children: React.React
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Período de Preenchimento Encerrado</h2>
                 <p className="text-slate-600 max-w-md">
-                    O prazo para envio e retificação da declaração encerrou em 20/03/2026.
+                    O prazo para envio e retificação da declaração encerrou em 24/03/2026.
                     Não é possível realizar novas alterações.
                     <br />
                     <span className="text-xs text-slate-400 mt-1 block">
