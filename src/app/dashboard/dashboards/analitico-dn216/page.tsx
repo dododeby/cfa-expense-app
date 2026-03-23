@@ -486,7 +486,9 @@ function ReportContent() {
                                     tickLine={false}
                                 />
                                 <Tooltip formatter={(v: number) => formatBRL(v)} />
-                                <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} label={{ position: 'right', formatter: (v: number) => totalAnalitica > 0 ? `${((v / totalAnalitica) * 100).toFixed(1)}%` : '0%', fontSize: 10, fontWeight: '600', fill: '#1e40af' }} />
+                                <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]}>
+                                    <LabelList dataKey="value" position="right" formatter={(v: any) => (v && totalAnalitica > 0) ? `${((Number(v) / totalAnalitica) * 100).toFixed(1)}%` : '0%'} fontSize={10} fontWeight="600" fill="#1e40af" />
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
