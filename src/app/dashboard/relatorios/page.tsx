@@ -186,6 +186,18 @@ export default function RelatoriosPage() {
                                 <div className="text-xs text-slate-500">Visão geral do resultado</div>
                             </div>
                         </Button>
+
+                        <Button
+                            variant="outline"
+                            className="justify-start h-14 hover:border-emerald-200 hover:bg-emerald-50"
+                            onClick={() => router.push('/dashboard/dashboards/analitico-dn216')}
+                        >
+                            <BarChart3 className="mr-4 h-5 w-5 text-emerald-600" />
+                            <div className="text-left">
+                                <div className="font-semibold text-slate-700">Gerar Relatório Analítico</div>
+                                <div className="text-xs text-slate-500">Dashboard detalhado (DN 216/2025)</div>
+                            </div>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>
