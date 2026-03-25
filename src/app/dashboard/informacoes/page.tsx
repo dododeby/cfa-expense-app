@@ -200,7 +200,7 @@ function InformacoesContent() {
                             <div>
                                 <h3 className="font-semibold mb-2">Prazo de Preenchimento</h3>
                                 <p className="text-sm text-slate-600">
-                                    Ressaltamos que o prazo final para o preenchimento e envio das informações é 24 de março de 2026.
+                                    Ressaltamos que o prazo final para o preenchimento e envio das informações é 31 de março de 2026.
                                 </p>
                             </div>
                             <div>
@@ -244,7 +244,7 @@ function InformacoesContent() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pb-3 text-sm text-amber-700">
-                            Ressaltamos que o prazo final para o preenchimento e envio das informações é <strong>24 de março de 2026</strong>.
+                            Ressaltamos que o prazo final para o preenchimento e envio das informações é <strong>31 de março de 2026</strong>.
                         </CardContent>
                     </Card>
 
