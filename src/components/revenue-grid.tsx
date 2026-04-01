@@ -99,7 +99,7 @@ export default function RevenueGrid() {
     const accounts: RevenueAccount[] = allRevenuesData as RevenueAccount[]
 
     // Get deadline based on org type
-    const deliveryDeadline = new Date('2026-03-31T23:59:59')
+    const deliveryDeadline = new Date('2026-04-07T23:59:59')
     const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
     const isPastDeadline = !isCFA && new Date() > deliveryDeadline
 
