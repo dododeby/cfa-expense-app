@@ -37,7 +37,7 @@ export default function DeclarationManager() {
     const [validationError, setValidationError] = useState<string | null>(null)
 
     // Deadline: 07/04/2026 — CFA has no deadline
-    const deadline = new Date('2026-04-07T23:59:59')
+    const deadline = new Date('2026-04-13T23:59:59')
     const now = new Date()
     const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
     // isPastDeadline is overridden if CFA unlocked rectification (status = 'draft') or if org is CFA
