@@ -27,7 +27,7 @@ export default function RectificationGuard({ children }: { children: React.React
             const dec = await loadDeclaration()
             setDeclaration(dec)
 
-            const deadline = new Date('2026-04-30T23:59:59')
+            const deadline = new Date('2025-05-31T23:59:59')
             const now = new Date()
             // CFA has no delivery deadline
             const isCFA = sessionStorage.getItem('orgType') === 'CFA'

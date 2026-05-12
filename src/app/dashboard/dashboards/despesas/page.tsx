@@ -294,7 +294,7 @@ function DashboardContent({
                     <CardContent>
                         {(() => {
                             // Delivery deadline: 07/04/2026 — CFA has no deadline
-                            const deliveryDeadline = new Date('2026-04-30T23:59:59')
+                            const deliveryDeadline = new Date('2025-05-31T23:59:59')
                             const currentDate = new Date()
                             const isPastDeadline = !isCFA && currentDate > deliveryDeadline
 
