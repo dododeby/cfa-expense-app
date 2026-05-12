@@ -126,7 +126,7 @@ export function TabbedExpenseGrid() {
     const [editValue, setEditValue] = useState("")
 
     // Check if past delivery deadline — CFA has no deadline
-    const deliveryDeadline = new Date('2025-05-31T23:59:59')
+    const deliveryDeadline = new Date('2026-05-31T23:59:59')
     const isCFA = typeof window !== 'undefined' && sessionStorage.getItem('orgType') === 'CFA'
     const isPastDeadline = !isCFA && new Date() > deliveryDeadline
 

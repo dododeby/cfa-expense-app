@@ -293,8 +293,8 @@ function DashboardContent({
                     </CardHeader>
                     <CardContent>
                         {(() => {
-                            // Delivery deadline: 07/04/2026 — CFA has no deadline
-                            const deliveryDeadline = new Date('2025-05-31T23:59:59')
+                            // Delivery deadline: 31/05/2026 — CFA has no deadline
+                            const deliveryDeadline = new Date('2026-05-31T23:59:59')
                             const currentDate = new Date()
                             const isPastDeadline = !isCFA && currentDate > deliveryDeadline
 
@@ -323,7 +323,7 @@ function DashboardContent({
                                     <>
                                         <div className="text-2xl font-bold text-red-600">Não Entregue</div>
                                         <p className="text-xs text-red-600">
-                                            Prazo encerrado em 07/04/2026
+                                            Prazo encerrado em 31/05/2026
                                         </p>
                                     </>
                                 )
