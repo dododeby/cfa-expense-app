@@ -175,7 +175,7 @@ export const exportForBI = (
 
     // Generate rows for each organization
     const rows = organizations.map(org => {
-        const row = [org.name];
+        const row: any[] = [org.name];
         const orgData = allData[org.id] || {};
 
         analyticalAccounts.forEach(acc => {
