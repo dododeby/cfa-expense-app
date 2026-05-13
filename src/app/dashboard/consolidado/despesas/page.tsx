@@ -41,6 +41,7 @@ interface ExpenseData {
     [accountId: string]: {
         total: number;
         finalistica: number;
+        name?: string;
     }
 }
 
