@@ -499,10 +499,19 @@ export function TabbedExpenseGrid() {
                     let totalDespesasCorrentes = 0
                     let totalDespesasCapital = 0
                     let totalGeral = 0
+                    let totalCotaParteTotal = 0
+                    let totalCotaParteFinalistica = 0
+                    let totalCotaParteApoio = 0
 
                     accounts.filter(a => a.type === 'Analítica').forEach(acc => {
                         const row = data[acc.id] || { total: 0, finalistica: 0 }
                         const apoio = row.total - row.finalistica
+
+                        if (acc.name.toLowerCase().includes("cota parte ao cfa") || acc.name.toLowerCase().includes("cota-parte")) {
+                            totalCotaParteTotal += row.total
+                            totalCotaParteFinalistica += row.finalistica
+                            totalCotaParteApoio += apoio
+                        }
 
                         totalFinalistica += row.finalistica
                         totalApoio += apoio
@@ -517,8 +526,12 @@ export function TabbedExpenseGrid() {
                         }
                     })
 
-                    const pctFinalistica = totalGeral > 0 ? (totalFinalistica / totalGeral) * 100 : 0
-                    const pctApoio = totalGeral > 0 ? (totalApoio / totalGeral) * 100 : 0
+                    const baseDeCalculoPercentuais = totalGeral - totalCotaParteTotal
+                    const finalisticaParaCalculo = totalFinalistica - totalCotaParteFinalistica
+                    const apoioParaCalculo = totalApoio - totalCotaParteApoio
+
+                    const pctFinalistica = baseDeCalculoPercentuais > 0 ? (finalisticaParaCalculo / baseDeCalculoPercentuais) * 100 : 0
+                    const pctApoio = baseDeCalculoPercentuais > 0 ? (apoioParaCalculo / baseDeCalculoPercentuais) * 100 : 0
 
                     return (
                         <>
@@ -530,7 +543,7 @@ export function TabbedExpenseGrid() {
                                 </CardHeader>
                                 <CardContent className="px-3 pb-3">
                                     <div className="text-lg font-bold text-blue-900">
-                                        {totalFinalistica.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        {finalisticaParaCalculo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                     </div>
                                     <div className="text-xs text-blue-600 font-medium">
                                         {pctFinalistica.toFixed(1)}%
@@ -546,7 +559,7 @@ export function TabbedExpenseGrid() {
                                 </CardHeader>
                                 <CardContent className="px-3 pb-3">
                                     <div className="text-lg font-bold text-slate-900">
-                                        {totalApoio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        {apoioParaCalculo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                     </div>
                                     <div className="text-xs text-slate-600 font-medium">
                                         {pctApoio.toFixed(1)}%
@@ -583,12 +596,12 @@ export function TabbedExpenseGrid() {
                             <Card className="border-blue-300 bg-blue-50">
                                 <CardHeader className="pb-2 px-3 pt-3">
                                     <CardTitle className="text-xs font-medium text-blue-900">
-                                        Total Geral
+                                        Total Geral (Base de Cálculo)
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="px-3 pb-3">
                                     <div className="text-lg font-bold text-blue-950">
-                                        {totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        {baseDeCalculoPercentuais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                     </div>
                                 </CardContent>
                             </Card>

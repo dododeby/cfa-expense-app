@@ -73,7 +73,7 @@ export default function ConsolidadoPage() {
                 Object.values(allData).forEach(orgData => {
                     Object.entries(orgData).forEach(([accountId, values]) => {
                         if (!summed[accountId]) {
-                            summed[accountId] = { total: 0, finalistica: 0 }
+                            summed[accountId] = { total: 0, finalistica: 0, name: values.name }
                         }
                         summed[accountId].total += values.total
                         summed[accountId].finalistica += values.finalistica
@@ -145,7 +145,37 @@ export default function ConsolidadoPage() {
 
     const getRowValues = (account: Account) => {
         if (account.type === 'Analítica') {
-            const rowData = consolidatedData[account.id] || { total: 0, finalistica: 0 }
+            let rowData = consolidatedData[account.id];
+
+            if (!rowData) {
+                if (account.id === '1.12.1.5' && consolidatedData['1.11.1.5']) {
+                    rowData = consolidatedData['1.11.1.5'];
+                } else if (account.name) {
+                    const targetName = account.name.trim().toLowerCase();
+                    const matchedKey = Object.keys(consolidatedData).find(key => {
+                        const dbName = consolidatedData[key].name;
+                        if (!dbName) return false;
+                        
+                        const dbNameLower = dbName.trim().toLowerCase();
+                        if (dbNameLower === targetName) return true;
+                        
+                        if ((targetName.includes('cota parte') || targetName.includes('cota-parte')) && 
+                            (dbNameLower.includes('cota parte') || dbNameLower.includes('cota-parte'))) {
+                            return true;
+                        }
+                        
+                        return false;
+                    });
+                    if (matchedKey) {
+                        rowData = consolidatedData[matchedKey];
+                    }
+                }
+            }
+
+            if (!rowData) {
+                rowData = { total: 0, finalistica: 0 };
+            }
+
             const apoio = rowData.total - rowData.finalistica
             const pctFinalistica = rowData.total > 0 ? (rowData.finalistica / rowData.total) * 100 : 0
             const pctApoio = rowData.total > 0 ? (apoio / rowData.total) * 100 : 0
@@ -184,11 +214,20 @@ export default function ConsolidadoPage() {
     let totalDespesasCorrentes = 0
     let totalDespesasCapital = 0
     let grandTotalMetric = 0
+    let totalCotaParteTotal = 0
+    let totalCotaParteFinalistica = 0
+    let totalCotaParteApoio = 0
 
     // We iterate over Accounts (definition) and look up in Consolidated Data
     accounts.filter(a => a.type === 'Analítica').forEach(acc => {
         const row = consolidatedData[acc.id] || { total: 0, finalistica: 0 }
         const apoio = row.total - row.finalistica
+
+        if (acc.name.toLowerCase().includes("cota parte ao cfa") || acc.name.toLowerCase().includes("cota-parte")) {
+            totalCotaParteTotal += row.total
+            totalCotaParteFinalistica += row.finalistica
+            totalCotaParteApoio += apoio
+        }
 
         totalFinalistica += row.finalistica
         totalApoio += apoio
@@ -201,8 +240,12 @@ export default function ConsolidadoPage() {
         }
     })
 
-    const pctFinalistica = grandTotalMetric > 0 ? (totalFinalistica / grandTotalMetric) * 100 : 0
-    const pctApoio = grandTotalMetric > 0 ? (totalApoio / grandTotalMetric) * 100 : 0
+    const baseDeCalculoPercentuais = grandTotalMetric - totalCotaParteTotal
+    const finalisticaParaCalculo = totalFinalistica - totalCotaParteFinalistica
+    const apoioParaCalculo = totalApoio - totalCotaParteApoio
+
+    const pctFinalistica = baseDeCalculoPercentuais > 0 ? (finalisticaParaCalculo / baseDeCalculoPercentuais) * 100 : 0
+    const pctApoio = baseDeCalculoPercentuais > 0 ? (apoioParaCalculo / baseDeCalculoPercentuais) * 100 : 0
 
     return (
         <div className="space-y-4">
@@ -215,6 +258,11 @@ export default function ConsolidadoPage() {
                             : `Visualizando dados de: ${selectedRegionalName}`
                         }
                     </p>
+                    {totalCotaParteTotal > 0 && (
+                        <p className="text-xs text-amber-700 mt-2 font-medium bg-amber-50 p-2 rounded border border-amber-200 inline-block">
+                            * Nota: Para o cálculo dos percentuais, o valor da Cota-Parte ({totalCotaParteTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) foi deduzido da base de cálculo.
+                        </p>
+                    )}
                 </div>
                 <div className="flex gap-3 items-center">
                     <Select value={selectedRegional} onValueChange={setSelectedRegional}>
@@ -254,7 +302,7 @@ export default function ConsolidadoPage() {
                     </CardHeader>
                     <CardContent className="px-3 pb-3">
                         <div className="text-lg font-bold text-blue-900">
-                            {totalFinalistica.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {finalisticaParaCalculo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </div>
                         <div className="text-xs text-blue-600 font-medium">
                             {pctFinalistica.toFixed(1)}%
@@ -270,7 +318,7 @@ export default function ConsolidadoPage() {
                     </CardHeader>
                     <CardContent className="px-3 pb-3">
                         <div className="text-lg font-bold text-slate-900">
-                            {totalApoio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {apoioParaCalculo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </div>
                         <div className="text-xs text-slate-600 font-medium">
                             {pctApoio.toFixed(1)}%
@@ -307,12 +355,12 @@ export default function ConsolidadoPage() {
                 <Card className="border-blue-300 bg-blue-50">
                     <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="text-xs font-medium text-blue-900">
-                            Total Geral
+                            Total Geral (Base de Cálculo)
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="px-3 pb-3">
                         <div className="text-lg font-bold text-blue-950">
-                            {grandTotalMetric.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {baseDeCalculoPercentuais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </div>
                     </CardContent>
                 </Card>

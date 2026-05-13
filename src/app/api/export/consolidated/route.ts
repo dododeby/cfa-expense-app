@@ -4,13 +4,29 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 export async function GET() {
     try {
         // Query ALL expenses from all organizations (bypassing RLS)
-        const { data: expenses, error: expensesError } = await supabaseAdmin
-            .from('expenses')
-            .select('organization_id, account_id, account_name, total, finalistica')
+        let expenses: any[] = [];
+        let start = 0;
+        const step = 1000;
+        let hasMore = true;
 
-        if (expensesError) {
-            console.error('Error loading expenses:', expensesError)
-            return NextResponse.json({ error: 'Failed to load expenses' }, { status: 500 })
+        while (hasMore) {
+            const { data, error } = await supabaseAdmin
+                .from('expenses')
+                .select('organization_id, account_id, account_name, total, finalistica')
+                .range(start, start + step - 1);
+
+            if (error) {
+                console.error('Error loading expenses:', error);
+                return NextResponse.json({ error: 'Failed to load expenses' }, { status: 500 });
+            }
+
+            if (data && data.length > 0) {
+                expenses = [...expenses, ...data];
+                start += step;
+                if (data.length < step) hasMore = false;
+            } else {
+                hasMore = false;
+            }
         }
 
         // Query ALL organizations
@@ -33,7 +49,8 @@ export async function GET() {
             }
             consolidatedData[row.organization_id][row.account_id] = {
                 total: parseFloat(row.total) || 0,
-                finalistica: parseFloat(row.finalistica) || 0
+                finalistica: parseFloat(row.finalistica) || 0,
+                name: row.account_name
             }
         })
 

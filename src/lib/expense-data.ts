@@ -4,6 +4,7 @@ export interface ExpenseData {
     [accountId: string]: {
         total: number;
         finalistica: number;
+        name?: string;
     }
 }
 
@@ -17,7 +18,7 @@ export async function loadExpenseData(): Promise<ExpenseData> {
 
         const { data, error } = await supabase
             .from('expenses')
-            .select('account_id, total, finalistica')
+            .select('account_id, account_name, total, finalistica')
             .eq('organization_id', orgId)
             .limit(20000)
 
@@ -30,7 +31,8 @@ export async function loadExpenseData(): Promise<ExpenseData> {
         data?.forEach(row => {
             expenseData[row.account_id] = {
                 total: parseFloat(row.total) || 0,
-                finalistica: parseFloat(row.finalistica) || 0
+                finalistica: parseFloat(row.finalistica) || 0,
+                name: row.account_name
             }
         })
 
@@ -98,7 +100,7 @@ export async function loadConsolidatedData(): Promise<{ [orgId: string]: Expense
         while (hasMore) {
             const { data, error } = await supabase
                 .from('expenses')
-                .select('organization_id, account_id, total, finalistica')
+                .select('organization_id, account_id, account_name, total, finalistica')
                 .range(allData.length, allData.length + PAGE_SIZE - 1)
 
             if (error) throw error
@@ -124,7 +126,8 @@ export async function loadConsolidatedData(): Promise<{ [orgId: string]: Expense
             }
             consolidated[row.organization_id][row.account_id] = {
                 total: parseFloat(row.total) || 0,
-                finalistica: parseFloat(row.finalistica) || 0
+                finalistica: parseFloat(row.finalistica) || 0,
+                name: row.account_name
             }
         })
 
@@ -142,7 +145,7 @@ export async function loadOrganizationData(orgId: string): Promise<ExpenseData> 
     try {
         const { data, error } = await supabase
             .from('expenses')
-            .select('account_id, total, finalistica')
+            .select('account_id, account_name, total, finalistica')
             .eq('organization_id', orgId)
             .limit(20000)
 
@@ -152,7 +155,8 @@ export async function loadOrganizationData(orgId: string): Promise<ExpenseData> 
         data?.forEach(row => {
             expenseData[row.account_id] = {
                 total: parseFloat(row.total) || 0,
-                finalistica: parseFloat(row.finalistica) || 0
+                finalistica: parseFloat(row.finalistica) || 0,
+                name: row.account_name
             }
         })
 

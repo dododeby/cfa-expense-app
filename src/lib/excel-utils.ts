@@ -38,7 +38,37 @@ export const exportToExcel = (data: ExpenseData, organizationName: string) => {
     const analyticalAccounts = accounts.filter(acc => acc.type === 'Analítica');
 
     const rows = analyticalAccounts.map(account => {
-        const rowData = data[account.id] || { total: 0, finalistica: 0 };
+        let rowData = data[account.id];
+
+        if (!rowData) {
+            // Explicitly check for known old IDs first
+            if (account.id === '1.12.1.5' && data['1.11.1.5']) {
+                rowData = data['1.11.1.5'];
+            } else if (account.name) {
+                const targetName = account.name.trim().toLowerCase();
+                const matchedKey = Object.keys(data).find(key => {
+                    const dbName = data[key].name;
+                    if (!dbName) return false;
+                    
+                    const dbNameLower = dbName.trim().toLowerCase();
+                    if (dbNameLower === targetName) return true;
+                    
+                    if ((targetName.includes('cota parte') || targetName.includes('cota-parte')) && 
+                        (dbNameLower.includes('cota parte') || dbNameLower.includes('cota-parte'))) {
+                        return true;
+                    }
+                    
+                    return false;
+                });
+                if (matchedKey) {
+                    rowData = data[matchedKey];
+                }
+            }
+        }
+
+        if (!rowData) {
+            rowData = { total: 0, finalistica: 0 };
+        }
 
         return [
             account.id,
@@ -85,21 +115,22 @@ export const importFromExcel = (file: File): Promise<ExpenseData> => {
 
                 // Skip header row (index 0)
                 jsonData.slice(1).forEach(row => {
-                    // Expected Columns:
-                    // 0: Código (ID)
-                    // 1: Conta (Name)
-                    // 2: Total
-                    // 3: Atividade Finalística
-
                     let id = row[0]?.toString().trim();
                     const name = row[1]?.toString().trim().toLowerCase();
                     const total = parseFloat(row[2]) || 0;
                     const finalistica = parseFloat(row[3]) || 0;
 
+                    // Map old ID for Cota Parte
+                    if (id === '1.11.1.5') {
+                        id = '1.12.1.5';
+                    }
+
                     // Try to resolve ID if missing or invalid, using name map
                     if (!id || !accountMap.has(id)) {
                         if (name && nameMap.has(name)) {
                             id = nameMap.get(name);
+                        } else if (name && (name.includes('cota parte') || name.includes('cota-parte'))) {
+                            id = '1.12.1.5'; // Special fuzzy fallback for Cota Parte
                         }
                     }
 
@@ -147,13 +178,50 @@ export const exportForBI = (
         const orgData = allData[org.id] || {};
 
         analyticalAccounts.forEach(acc => {
-            const accData = orgData[acc.id] || { total: 0, finalistica: 0 };
-            const finalistica = accData.finalistica;
-            const apoio = accData.total - accData.finalistica;
+            let accData = orgData[acc.id];
 
-            row.push(accData.total.toString());
-            row.push(finalistica.toString());
-            row.push(apoio.toString());
+            // Fallback: If not found by ID, try finding by Name.
+            // This happens if an account ID was changed in all-accounts.json
+            // but the database still holds data under the old ID (like Cota Parte 1.11.1.5 -> 1.12.1.5)
+            if (!accData) {
+                // Explicitly check for known old IDs first
+                if (acc.id === '1.12.1.5' && orgData['1.11.1.5']) {
+                    accData = orgData['1.11.1.5'];
+                } else if (acc.name) {
+                    const targetName = acc.name.trim().toLowerCase();
+                    const matchedKey = Object.keys(orgData).find(key => {
+                        const dbName = orgData[key].name;
+                        if (!dbName) return false;
+                        
+                        const dbNameLower = dbName.trim().toLowerCase();
+                        if (dbNameLower === targetName) return true;
+                        
+                        // Special case for Cota Parte which might have variations like "cota-parte" or "cota parte ao cfa"
+                        if ((targetName.includes('cota parte') || targetName.includes('cota-parte')) && 
+                            (dbNameLower.includes('cota parte') || dbNameLower.includes('cota-parte'))) {
+                            return true;
+                        }
+                        
+                        return false;
+                    });
+                    
+                    if (matchedKey) {
+                        accData = orgData[matchedKey];
+                    }
+                }
+            }
+
+            // Default to zero if still not found
+            if (!accData) {
+                accData = { total: 0, finalistica: 0 };
+            }
+
+            const finalistica = accData.finalistica || 0;
+            const apoio = (accData.total || 0) - finalistica;
+
+            row.push(accData.total || 0);
+            row.push(finalistica);
+            row.push(apoio);
         });
 
         return row;
@@ -263,7 +331,7 @@ export const exportRevenuesForBI = (
 
         analytical.forEach(rev => {
             const val = orgData[rev.id]?.value || 0;
-            row.push(val.toString()); // Export as string/number
+            row.push(val); // Export as raw number for BI
         });
         return row;
     });
