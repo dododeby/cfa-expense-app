@@ -327,7 +327,7 @@ export const exportRevenuesForBI = (
     const headers = ["Organização", ...analytical.map(r => r.name)];
 
     const rows = organizations.map(org => {
-        const row = [org.name];
+        const row: any[] = [org.name];
         const orgData = allData[org.id] || {};
 
         analytical.forEach(rev => {
