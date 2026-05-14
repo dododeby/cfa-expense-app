@@ -51,6 +51,7 @@ export default function ConsolidadoPage() {
     const [loading, setLoading] = useState(true)
     const [fullData, setFullData] = useState<{ [orgId: string]: ExpenseData }>({})
     const [allOrgs, setAllOrgs] = useState<{ id: string; name: string }[]>([])
+    const [deductCotaParte, setDeductCotaParte] = useState(true)
 
 
 
@@ -241,9 +242,9 @@ export default function ConsolidadoPage() {
         }
     })
 
-    const baseDeCalculoPercentuais = grandTotalMetric - totalCotaParteTotal
-    const finalisticaParaCalculo = totalFinalistica - totalCotaParteFinalistica
-    const apoioParaCalculo = totalApoio - totalCotaParteApoio
+    const baseDeCalculoPercentuais = deductCotaParte ? grandTotalMetric - totalCotaParteTotal : grandTotalMetric
+    const finalisticaParaCalculo = deductCotaParte ? totalFinalistica - totalCotaParteFinalistica : totalFinalistica
+    const apoioParaCalculo = deductCotaParte ? totalApoio - totalCotaParteApoio : totalApoio
 
     const pctFinalistica = baseDeCalculoPercentuais > 0 ? (finalisticaParaCalculo / baseDeCalculoPercentuais) * 100 : 0
     const pctApoio = baseDeCalculoPercentuais > 0 ? (apoioParaCalculo / baseDeCalculoPercentuais) * 100 : 0
@@ -259,9 +260,14 @@ export default function ConsolidadoPage() {
                             : `Visualizando dados de: ${selectedRegionalName}`
                         }
                     </p>
-                    {totalCotaParteTotal > 0 && (
+                    {totalCotaParteTotal > 0 && deductCotaParte && (
                         <p className="text-xs text-amber-700 mt-2 font-medium bg-amber-50 p-2 rounded border border-amber-200 inline-block">
                             * Nota: Para o cálculo dos percentuais, o valor da Cota-Parte ({totalCotaParteTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) foi deduzido da base de cálculo.
+                        </p>
+                    )}
+                    {totalCotaParteTotal > 0 && !deductCotaParte && (
+                        <p className="text-xs text-slate-500 mt-2 font-medium bg-slate-50 p-2 rounded border border-slate-200 inline-block">
+                            * Nota: O valor da Cota-Parte ({totalCotaParteTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) está SENDO INCLUÍDO na base de cálculo.
                         </p>
                     )}
                 </div>
@@ -278,6 +284,18 @@ export default function ConsolidadoPage() {
                             ))}
                         </SelectContent>
                     </Select>
+
+                    <Button
+                        variant={deductCotaParte ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setDeductCotaParte(!deductCotaParte)}
+                        className={cn(
+                            "transition-all",
+                            deductCotaParte ? "bg-amber-600 hover:bg-amber-700 text-white" : "text-slate-600"
+                        )}
+                    >
+                        {deductCotaParte ? "Dedução Cota-Parte: ATIVA" : "Dedução Cota-Parte: INATIVA"}
+                    </Button>
 
                     <Button variant="outline" size="sm" onClick={handleExportXLS}>
                         <Download className="h-4 w-4 mr-2" />
